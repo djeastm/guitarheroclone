@@ -24,7 +24,7 @@ public class ChartReader : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		// Test change
 	}
 
 	Chart ParseChart(string text)
