@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
 
-public class ChartReader : MonoBehaviour {
+public class ChartReader : MonoBehaviour
+{
 
 	GameController gc;
-	public TextAsset chartFile;	
+	public TextAsset chartFile;
 	public Chart chart;
 	public Transform[] notePrefabs;
 	public Transform[] tailPrefabs;
 	int fretboardScale;
 
 	// Use this for initialization
-	void Start () {
+	void Start()
+	{
 		gc = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 		fretboardScale = gc.speed;
 
@@ -21,14 +23,15 @@ public class ChartReader : MonoBehaviour {
 		//Debug.Log(chart.Notes.Count);
 		SpawnNotes(chart);
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
-		// Test change
+	void Update()
+	{
+
 	}
 
 	Chart ParseChart(string text)
-	{		
+	{
 		string[] sections = Regex.Split(text, @"(?:}\r\n)*\[.*\](?:\r\n{)");
 		//int count = 0;
 
@@ -53,16 +56,18 @@ public class ChartReader : MonoBehaviour {
 		// Section 2 - Synctrack data, like time signature and beats per second (x1000)
 		string[] syncData = sections[2].Trim().Split('\n');
 
-		for (int i = 0; i < syncData.Length; i++) { 
+		for (int i = 0; i < syncData.Length; i++)
+		{
 			if (syncData[i].Trim().Split('=')[1].Trim().Split(' ')[0] == "B")
 			{
 				// BPM change
 				int tick = int.Parse(syncData[i].Trim().Split('=')[0].Trim());
 				int value = int.Parse(syncData[i].Trim().Split('=')[1].Trim().Split(' ')[1]);
 				BPM bpm = new BPM(tick, value);
-				
-				c.bpms.Add(bpm);				
-			} else
+
+				c.bpms.Add(bpm);
+			}
+			else
 			{
 				// Time signature change
 				int tick = int.Parse(syncData[i].Trim().Split('=')[0].Trim());
@@ -74,8 +79,8 @@ public class ChartReader : MonoBehaviour {
 				};
 				c.timeSignatures.Add(ts);
 			}
-		}	
-		
+		}
+
 		for (int i = 0; i < c.bpms.Count; i++)
 		{
 			c.bpms[i].assignedTime = TickToTime(c, c.bpms[i].tick, c.Resolution);
@@ -87,8 +92,8 @@ public class ChartReader : MonoBehaviour {
 		string[] notesData = sections[4].Trim().Split('\n');
 
 		c.Notes = new List<Note>();
-		for (int i = 0; i < notesData.Length; i++) 
-		{			
+		for (int i = 0; i < notesData.Length; i++)
+		{
 			//Debug.Log(i);
 			Note n = new Note();
 			if (notesData[i].Length > 3) // skip blanks
@@ -127,8 +132,9 @@ public class ChartReader : MonoBehaviour {
 		return point.z;
 	}
 
-	void SpawnPrefab(Transform prefab, Vector3 point, float length)	{
-		
+	void SpawnPrefab(Transform prefab, Vector3 point, float length)
+	{
+
 		Transform button = Instantiate(prefab);
 		button.SetParent(transform);
 		button.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
@@ -137,10 +143,10 @@ public class ChartReader : MonoBehaviour {
 			Transform tail = Instantiate(prefab);
 			tail.SetParent(transform);
 			tail.position = new Vector3(button.position.x, button.position.y, point.z + length / 2f);
-			tail.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y *0.5f, length);
+			tail.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, length);
 		}
 	}
-		
+
 	// This code is taken without much change from the Moonscraper Guitar Hero Chart Editor
 	// By Alexander "FireFox" Ong
 	float TickToTime(Chart c, int tick, int resolution)
@@ -161,20 +167,20 @@ public class ChartReader : MonoBehaviour {
 			}
 			else
 			{
-				time += DisToTime(prevBPM.tick, bpmInfo.tick, resolution, prevBPM.value / 1000.0f);
+				time += DisToTime(prevBPM.tick, bpmInfo.tick, resolution, prevBPM.value / 1000.0f, fretboardScale);
 				prevBPM = bpmInfo;
 			}
 		}
 
-		time += DisToTime(prevBPM.tick, tick, resolution, prevBPM.value / 1000.0f);
+		time += DisToTime(prevBPM.tick, tick, resolution, prevBPM.value / 1000.0f, fretboardScale);
 
 		return (float)time;
 	}
 
 	// This code is taken without much change from the Moonscraper Guitar Hero Chart Editor
 	// By Alexander "FireFox" Ong
-	public static double DisToTime(int tickStart, int tickEnd, float resolution, float bpm)
+	public static double DisToTime(int tickStart, int tickEnd, float resolution, float bpm, int fretboardScale)
 	{
-		return (tickEnd - tickStart) / resolution * 60 / bpm;
+		return fretboardScale * (tickEnd - tickStart) / resolution * 60 / bpm;
 	}
 }
