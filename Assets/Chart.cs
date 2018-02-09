@@ -1,13 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
+public enum Difficulty
+{
+	Easy,
+	Medium,
+	Hard,
+	Expert
+}
+
 [System.Serializable]
 public class Chart
 {
 	public string Name;
 	public string Artist;
 	public string Charter;
-	public int Offset;
+	public float Offset;
 	public int Resolution;
 	public string Player2;
 	public int Difficulty;
@@ -19,6 +27,6 @@ public class Chart
 
 	public List<TimeSignature> timeSignatures;
 	public List<BPM> bpms; // x1000
-	
-	public List<Note> Notes;
+
+	public Dictionary<Difficulty, List<Note>> Notes;	
 }

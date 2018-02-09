@@ -3,7 +3,7 @@
 	Name = "Godzilla"
 	Artist = "Blue Oyster Cult"
 	Charter = ""
-	Offset = 0
+	Offset = -120
 	Resolution = 480	
 	Player2 = Bass
 	Difficulty = 0
@@ -11,8 +11,7 @@
 	PreviewEnd = 0.00
 	Genre = "rock"
 	MediaType = "cd"
-	MusicStream = "godzilla.mp3"
-	
+	MusicStream = "godzilla.mp3"	
 }
 [SyncTrack]
 {

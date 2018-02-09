@@ -3,7 +3,7 @@
 	Name = "Prodigy"
 	Artist = "Schmutz06"
 	Charter = "Schmutz06"
-	Offset = 0
+	Offset = -96
 	Resolution = 192
 	Player2 = bass
 	Difficulty = 0

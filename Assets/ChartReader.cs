@@ -4,44 +4,44 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 
 public class ChartReader : MonoBehaviour
-{
-
-	GameController gc;
-	public TextAsset chartFile;
+{	
+	private TextAsset chartFile;
 	public Chart chart;
 	public Transform[] notePrefabs;
-	public Transform[] tailPrefabs;
-	int fretboardScale;
+	//public Transform[] tailPrefabs; //tails are now being made from note buttons
+	int fretboardScale;	
 
-	// Use this for initialization
-	void Start()
+	public void ReadChart(TextAsset chartFile, int speed, Difficulty diff)
 	{
-		gc = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-		fretboardScale = gc.speed;
-
+		this.chartFile = chartFile;
+		fretboardScale = speed;
 		chart = ParseChart(chartFile.text.ToString());
-		//Debug.Log(chart.Notes.Count);
-		SpawnNotes(chart);
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
+		//Debug.Log(chart.Notes[diff].Count);
+		SpawnNotes(chart, diff);
+	}	
 
 	Chart ParseChart(string text)
 	{
-		string[] sections = Regex.Split(text, @"(?:}\r\n)*\[.*\](?:\r\n{)");
-		//int count = 0;
+		MatchCollection sectionNameMatches = Regex.Matches(text, @"\[(.*)\]");
+		List<string> sectionNames = new List<string>();
+		foreach (Match m in sectionNameMatches)
+		{
+			sectionNames.Add(m.Groups[1].Value);				
+		}
+
+		string[] sectionsArr = Regex.Split(text, @"(?:}\r\n)*\[.*\](?:\r\n{)");
+		List<string> sections = new List<string>();
+		foreach (string s in sectionsArr) if (s.Length > 0) sections.Add(s);
 
 		Chart c = new Chart();
 		// Section 1 - Song Metadata
-		string[] nameData = sections[1].Trim().Split('\n');
+		string[] nameData = sections[0].Trim().Split('\n');
 		c.Name = nameData[0].Trim().Split('=')[1].Trim();
 		c.Artist = nameData[1].Trim().Split('=')[1].Trim();
-		c.Charter = nameData[2].Trim().Split('=')[1].Trim();
-		c.Offset = int.Parse(nameData[3].Trim().Split('=')[1].Trim());
+		c.Charter = nameData[2].Trim().Split('=')[1].Trim();		
+		c.Offset = float.Parse(nameData[3].Trim().Split('=')[1].Trim());
+		// Offset might be used differently here than by GH
+		// It is the amount of ticks to push up the start of the notes
 		c.Resolution = int.Parse(nameData[4].Trim().Split('=')[1].Trim());
 		c.Player2 = nameData[5].Trim().Split('=')[1].Trim();
 		c.Difficulty = int.Parse(nameData[6].Trim().Split('=')[1].Trim());
@@ -54,7 +54,7 @@ public class ChartReader : MonoBehaviour
 		c.timeSignatures = new List<TimeSignature>();
 
 		// Section 2 - Synctrack data, like time signature and beats per second (x1000)
-		string[] syncData = sections[2].Trim().Split('\n');
+		string[] syncData = sections[1].Trim().Split('\n');
 
 		for (int i = 0; i < syncData.Length; i++)
 		{
@@ -86,12 +86,35 @@ public class ChartReader : MonoBehaviour
 			c.bpms[i].assignedTime = TickToTime(c, c.bpms[i].tick, c.Resolution);
 		}
 
-		// Section 3 is ignored for now
+		// Section 3 (index2) is ignored 
 
-		// Section 4 is the first guitar track
-		string[] notesData = sections[4].Trim().Split('\n');
+		// Section 4 (index3) is the first guitar track
+		c.Notes = new Dictionary<Difficulty, List<Note>>();
+		//Debug.Log("section count: " + sections.Count);
+		for (int i = 3; i < sectionNames.Count; i++)
+		{
+			//Debug.Log(i + " " + sectionNames[i]);
+			c.Notes.Add(ParseDifficulty(sectionNames[i]), ParseNotes(sections[i]));
+		}
 
-		c.Notes = new List<Note>();
+		return c;
+	}
+
+	private Difficulty ParseDifficulty(string unparsed)
+	{		
+		if (unparsed.StartsWith("Easy")) return Difficulty.Easy;
+		if (unparsed.StartsWith("Medium")) return Difficulty.Medium;
+		if (unparsed.StartsWith("Hard")) return Difficulty.Hard;
+		if (unparsed.StartsWith("Expert")) return Difficulty.Expert;
+
+		return Difficulty.Expert;
+	}
+
+	List<Note> ParseNotes(string section)
+	{
+		string[] notesData = section.Trim().Split('\n');
+		
+		List<Note> notes = new List<Note>();
 		for (int i = 0; i < notesData.Length; i++)
 		{
 			//Debug.Log(i);
@@ -109,16 +132,17 @@ public class ChartReader : MonoBehaviour
 				// 0-4 is green-orange buttons, 5 is force flag (?), 6 is tap note, 7 is open note
 				if (n.button > 4) continue; // Ignore 5, 6, or 7 notes
 				n.length = int.Parse(noteData[1].Trim().Split(' ')[2]);
-				c.Notes.Add(n);
+				notes.Add(n);
 			}
 		}
-		return c;
+		return notes;
 	}
 
 	// Spawn all notes
-	void SpawnNotes(Chart c)
+	void SpawnNotes(Chart c, Difficulty diff)
 	{
-		foreach (Note note in c.Notes)
+		List<Note> notes = c.Notes[diff];
+		foreach (Note note in notes)
 		{
 			SpawnNote(c, note);
 		}
@@ -127,14 +151,15 @@ public class ChartReader : MonoBehaviour
 	//Spawn single note
 	float SpawnNote(Chart c, Note note)
 	{
-		Vector3 point = new Vector3(0f, 0f, TickToTime(c, note.start, c.Resolution));
+		// Subtract the offset from the note's start position
+		Vector3 point = new Vector3(0f, 0f, TickToTime(c, note.start, c.Resolution) - TickToTime(c, (int)c.Offset, c.Resolution));
+		// When spawning the prefab, convert the length from ticks to time
 		SpawnPrefab(notePrefabs[note.button], point, TickToTime(c, note.length, c.Resolution));
 		return point.z;
 	}
 
 	void SpawnPrefab(Transform prefab, Vector3 point, float length)
 	{
-
 		Transform button = Instantiate(prefab);
 		button.SetParent(transform);
 		button.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
@@ -142,9 +167,16 @@ public class ChartReader : MonoBehaviour
 		{
 			Transform tail = Instantiate(prefab);
 			tail.SetParent(transform);
+			// We want push the tail back by half to line up with the end of the note
 			tail.position = new Vector3(button.position.x, button.position.y, point.z + length / 2f);
+			// Then we reshape our note prefab to make a tail of the correct length
 			tail.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, length);
-		}
+			// We tell the button that its tail has this length, so they can be destroyed correctly
+			tail.GetComponent<ButtonController>().SetLength(length);
+			button.GetComponent<ButtonController>().SetLength(length);			
+			tail.SetParent(button);
+		}		
+		if (button.position.z < Camera.main.farClipPlane) button.GetComponent<Renderer>().enabled = true;
 	}
 
 	// This code is taken without much change from the Moonscraper Guitar Hero Chart Editor
