@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 
 public class ChartReader : MonoBehaviour
 {	
-	private TextAsset chartFile;
 	public Chart chart;
 	public Transform[] notePrefabs;
 	//public Transform[] tailPrefabs; //tails are now being made from note buttons
@@ -13,7 +12,6 @@ public class ChartReader : MonoBehaviour
 
 	public void ReadChart(TextAsset chartFile, int speed, Difficulty diff)
 	{
-		this.chartFile = chartFile;
 		fretboardScale = speed;
 		chart = ParseChart(chartFile.text.ToString());
 		//Debug.Log(chart.Notes[diff].Count);

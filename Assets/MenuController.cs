@@ -42,7 +42,7 @@ public class MenuController : MonoBehaviour {
 	void Start () {
 		for (int i = 0; i < levels.Length; i++) {
 			GameObject songSelectButton = Instantiate(songSelectButtonPrefab);
-			songSelectButton.transform.parent = mainMenuContentPane.transform;
+			songSelectButton.transform.SetParent(mainMenuContentPane.transform);
 			songSelectButton.GetComponentInChildren<Text>()
 				.text = levels[i].title + " - " + levels[i].artist;
 			songSelectButton.GetComponent<SongSelectButtonCtrl>().id = i;
