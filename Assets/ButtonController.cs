@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using Leap.Unity.Interaction;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ButtonController : MonoBehaviour {
 
 	LevelController levelController;
+    InteractionManager interactionManager;
 	private bool hit;
 	private float length = 0f;
 	Renderer rend;
@@ -12,7 +14,8 @@ public class ButtonController : MonoBehaviour {
 
 	void Awake () {
 		levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
-		rend = GetComponent<Renderer>();
+        interactionManager = GameObject.FindGameObjectWithTag("InteractionManager").GetComponent<InteractionManager>();
+        rend = GetComponent<Renderer>();
 		hitColor = new Color(1f, 1f, 1f);
 	}
 

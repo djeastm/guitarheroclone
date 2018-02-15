@@ -10,7 +10,7 @@ public class Boundary
 
 public class HandInteraction : MonoBehaviour
 {
-	new Rigidbody rigidbody;
+    new Rigidbody rigidbody;
 	public float speed;
 	public float tilt;
 	public Boundary boundary;
