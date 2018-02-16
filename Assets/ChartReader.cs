@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using System.Text.RegularExpressions;
 
@@ -8,14 +9,19 @@ public class ChartReader : MonoBehaviour
 	public Chart chart;
 	public Transform[] notePrefabs;
 	//public Transform[] tailPrefabs; //tails are now being made from note buttons
-	int fretboardScale;	
+	int fretboardScale;
+	private float fretboardTime;
+	public Transform fretboardPrefab;
 
-	public void ReadChart(TextAsset chartFile, int speed, Difficulty diff)
+	public List<Note> ReadChart(TextAsset chartFile, int speed, Difficulty diff)
 	{
 		fretboardScale = speed;
 		chart = ParseChart(chartFile.text.ToString());
-		//Debug.Log(chart.Notes[diff].Count);
-		SpawnNotes(chart, diff);
+		List<Note> notes = SpawnNotes(chart, diff);
+		fretboardTime = TickToTime(chart, notes[notes.Count - 1].start, chart.Resolution) + TickToTime(chart, (int)chart.Offset, chart.Resolution);
+		SpawnFretboard(fretboardPrefab,Vector3.zero,fretboardTime);
+		return notes;
+		
 	}	
 
 	Chart ParseChart(string text)
@@ -137,13 +143,15 @@ public class ChartReader : MonoBehaviour
 	}
 
 	// Spawn all notes
-	void SpawnNotes(Chart c, Difficulty diff)
+	List<Note> SpawnNotes(Chart c, Difficulty diff)
 	{
 		List<Note> notes = c.Notes[diff];
 		foreach (Note note in notes)
 		{
 			SpawnNote(c, note);
 		}
+
+		return notes;
 	}
 
 	//Spawn single note
@@ -165,7 +173,7 @@ public class ChartReader : MonoBehaviour
 		{
 			Transform tail = Instantiate(prefab);
 			tail.SetParent(transform);
-			// We want push the tail back by half to line up with the end of the note
+			// We want to push the tail back by half to line up with the end of the note
 			tail.position = new Vector3(button.position.x, button.position.y, point.z + length / 2f);
 			// Then we reshape our note prefab to make a tail of the correct length
 			tail.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, length);
@@ -213,4 +221,15 @@ public class ChartReader : MonoBehaviour
 	{
 		return fretboardScale * (tickEnd - tickStart) / resolution * 60 / bpm;
 	}
+
+
+	private void SpawnFretboard(Transform prefab, Vector3 point, float length = 0f)
+	{
+		Transform fretboard = Instantiate(prefab);
+		fretboard.SetParent(transform);
+		fretboard.position = new Vector3(fretboard.position.x, fretboard.position.y, point.z + length / 2f);
+		fretboard.localScale = new Vector3(fretboard.localScale.x, fretboard.localScale.y, length/10f);
+
+	}
+
 }

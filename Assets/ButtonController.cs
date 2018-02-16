@@ -6,7 +6,7 @@ using UnityEngine;
 public class ButtonController : MonoBehaviour {
 
     LevelController levelController;
-    InteractionManager interactionManager;
+    //InteractionManager interactionManager;
     private bool hit;
     private float length = 0f;
     Renderer rend;
@@ -14,7 +14,7 @@ public class ButtonController : MonoBehaviour {
 
     void Awake () {
         levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
-        interactionManager = GameObject.FindGameObjectWithTag("InteractionManager").GetComponent<InteractionManager>();
+        //interactionManager = GameObject.FindGameObjectWithTag("InteractionManager").GetComponent<InteractionManager>();
         rend = GetComponent<Renderer>();
         hitColor = new Color(1f, 1f, 1f);
     }
@@ -33,32 +33,28 @@ public class ButtonController : MonoBehaviour {
         this.length = length;
     }
 
-	private void OnTriggerStay(Collider other)
-	{
-		
-		if (other.transform.position.y > transform.localScale.y)
-		{
-			rend.material.color = hitColor;
-			if (!hit)
-			{
-				levelController.ReportNoteHit();
-				hit = true;
-			}
+    private void OnTriggerStay(Collider other)
+    {
+        rend.material.color = hitColor;
+        if (!hit)
+        {
+            levelController.ReportNoteHit();
+            hit = true;
+        }
 
-			levelController.HeldNoteIncreaseScore();
-		}
-	}
+        levelController.HeldNoteIncreaseScore();
+    }
 
-	//private void OnCollisionStay(Collision collision)
-	//{
-	//	rend.material.color = hitColor;
-	//	if (!hit)
-	//	{
-	//		levelController.ReportNoteHit();
-	//		hit = true;
-	//	}
+    //private void OnCollisionStay(Collision collision)
+    //{
+    //	rend.material.color = hitColor;
+    //	if (!hit)
+    //	{
+    //		levelController.ReportNoteHit();
+    //		hit = true;
+    //	}
 
-	//	levelController.HeldNoteIncreaseScore();
+    //	levelController.HeldNoteIncreaseScore();
 
-	//}
+    //}
 }

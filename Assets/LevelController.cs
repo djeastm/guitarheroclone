@@ -11,6 +11,7 @@ public class LevelController : MonoBehaviour {
 
 	public int speed = 8;
 	private int score = 0;
+	private int totalPossScore = 0;
 	public Text scoreText;
 	private bool _isRunning;
 
@@ -42,7 +43,13 @@ public class LevelController : MonoBehaviour {
 		this.level = level;
 		this.diff = diff;
 		Init();
-		GetComponent<ChartReader>().ReadChart(level.chartFile, speed, diff);
+		List<Note> notes = GetComponent<ChartReader>().ReadChart(level.chartFile, speed, diff);
+
+		totalPossScore = 0;
+		foreach (Note n in notes)
+		{
+			totalPossScore += (int) n.length;
+		}
 
 		foreach (AudioClip clip in level.musicFiles)
 		{
@@ -79,6 +86,12 @@ public class LevelController : MonoBehaviour {
 		UpdateScoreText();
 	}
 
+	public void ReportFretboardHit()
+	{
+		score -= 20;
+		UpdateScoreText();
+	}
+
 	public void HeldNoteIncreaseScore()
 	{
 		score++;
@@ -87,7 +100,7 @@ public class LevelController : MonoBehaviour {
 
 	private void UpdateScoreText()
 	{
-		scoreText.text = ""+score;
+		scoreText.text = ""+score/(float)totalPossScore;
 	}
 
 }
