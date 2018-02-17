@@ -12,18 +12,13 @@ public class LevelController : MonoBehaviour {
 	public int speed = 8;
 	private int score = 0;
 	private int totalPossScore = 0;
+
+    public int hitScoreIncrease = 10;
+    public int mistakePenalty = 5;
 	public Text scoreText;
 	private bool _isRunning;
 
-	void Awake () {
-
-	}
-
-	void Start()
-	{
-		
-	}
-
+    private Vector3 lastPositionHit;
 
 	private void Init()
 	{
@@ -80,15 +75,17 @@ public class LevelController : MonoBehaviour {
 	}
 
 	// Placeholder scoring system for testing
-	public void ReportNoteHit()
+	public void ReportNoteHit(/*Vector3 position*/)
 	{
-		score += 10;
+        //lastPositionHit = position;
+		score += hitScoreIncrease;
 		UpdateScoreText();
 	}
 
-	public void ReportFretboardHit()
+	public void ReportFretboardHit(/*Vector3 position*/)
 	{
-		score -= 20;
+        //if ()
+		score -= mistakePenalty;
 		UpdateScoreText();
 	}
 
@@ -100,7 +97,9 @@ public class LevelController : MonoBehaviour {
 
 	private void UpdateScoreText()
 	{
-		scoreText.text = ""+score/(float)totalPossScore;
+        float ratio = ((score / (float) totalPossScore));
+        if (ratio < 0) ratio = 0;
+		scoreText.text = string.Format("{0:0.00%}", ratio);
 	}
 
 }

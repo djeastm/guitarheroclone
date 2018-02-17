@@ -18,16 +18,16 @@ public class FretboardController : MonoBehaviour {
 		hitColor = new Color(1f, 1f, 1f);
 	}
 
-	private void OnTriggerStay(Collider oHitther)
-	{
-		rend.material.color = hitColor;
+	//private void OnTriggerEnter(Collider other)
+	//{
+	//	rend.material.color = hitColor;
 		
-		levelController.ReportFretboardHit();
+	//	levelController.ReportFretboardHit();
 
-	}
+	//}
 
-	private void OnTriggerExit(Collider other)
-	{
-		rend.material.color = origColor;
-	}
+	//private void OnTriggerExit(Collider other)
+	//{
+	//	rend.material.color = origColor;
+	//}
 }

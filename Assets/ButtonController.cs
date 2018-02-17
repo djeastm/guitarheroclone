@@ -33,28 +33,49 @@ public class ButtonController : MonoBehaviour {
         this.length = length;
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        rend.material.color = hitColor;
-        if (!hit)
-        {
-            levelController.ReportNoteHit();
-            hit = true;
-        }
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    rend.material.color = hitColor;
+    //    if (!hit)
+    //    {
+    //        levelController.ReportNoteHit(transform.position);
+    //        hit = true;
+    //    }
 
-        levelController.HeldNoteIncreaseScore();
+    //    levelController.HeldNoteIncreaseScore();
+    //}
+
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    Debug.Log(collision.gameObject.GetComponentInParent<ContactBone>());
+    //    if (collision.contacts[0].normal.y - transform.position.y < 0)
+    //    {
+    //        //Debug.Log(collision.contacts[0].normal.y - transform.position.y);
+    //        rend.material.color = hitColor;
+    //        if (!hit)
+    //        {
+    //            levelController.ReportNoteHit();
+    //            hit = true;
+    //        }
+
+    //        levelController.HeldNoteIncreaseScore();
+
+    //    }   
+    //}
+
+    private bool IsHand(Collider other)
+    {
+        if (other.transform.parent && other.transform.parent.parent)
+            return true;
+        else
+            return false;
     }
 
-    //private void OnCollisionStay(Collision collision)
-    //{
-    //	rend.material.color = hitColor;
-    //	if (!hit)
-    //	{
-    //		levelController.ReportNoteHit();
-    //		hit = true;
-    //	}
-
-    //	levelController.HeldNoteIncreaseScore();
-
-    //}
+    void OnTriggerEnter(Collider other)
+    {
+        if (IsHand(other))
+        {
+            Debug.Log("Yay! A hand collided!");
+        }
+    }
 }
