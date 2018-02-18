@@ -1,33 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Leap.Unity.Interaction;
 using UnityEngine;
 
 public class FretboardController : MonoBehaviour {
-
-	LevelController levelController;
+	
+	InteractionBehaviour interactionBehaviour;
 	private bool hit;
 	Renderer rend;
+	public Color hitColor;
 	private Color origColor;
-	Color hitColor;
+
 	// Use this for initialization
 	void Awake () {
-		levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
-		//interactionManager = GameObject.FindGameObjectWithTag("InteractionManager").GetComponent<InteractionManager>();
+		interactionBehaviour = GetComponent<InteractionBehaviour>();
 		rend = GetComponent<Renderer>();
 		origColor = rend.material.color;
-		hitColor = new Color(1f, 1f, 1f);
 	}
 
-	//private void OnTriggerEnter(Collider other)
+	//void Start()
+	//{
+	//	interactionBehaviour.OnContactBegin += OnContactBegin;
+	//	interactionBehaviour.OnContactEnd += OnContactEnd;
+	//}
+	//private void OnContactBegin()
 	//{
 	//	rend.material.color = hitColor;
-		
-	//	levelController.ReportFretboardHit();
-
 	//}
 
-	//private void OnTriggerExit(Collider other)
+	//private void OnContactEnd()
 	//{
 	//	rend.material.color = origColor;
 	//}
+	
 }

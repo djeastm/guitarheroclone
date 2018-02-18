@@ -6,100 +6,114 @@ using UnityEngine.UI;
 [RequireComponent(typeof(ChartReader))]
 public class LevelController : MonoBehaviour {
 
-	private Level level;
-	private Difficulty diff;
+    private Level level;
+    private Difficulty diff;
 
-	public int speed = 8;
-	private int score = 0;
-	private int totalPossScore = 0;
+    public int speed = 8;
+    private int score = 0;
+    private int totalPossScore = 0;
 
     public int hitScoreIncrease = 10;
-    public int mistakePenalty = 5;
-	public Text scoreText;
-	private bool _isRunning;
+    public int errorPenalty = 5;
+    public float errorPenaltyTime = 0.5f;
+    public Text scoreText;
+    private bool _isRunning;
 
     private Vector3 lastPositionHit;
 
-	private void Init()
-	{
-		score = 0;
-		scoreText.text = "Score";
 
-		transform.position = Vector3.zero;
+    public bool ErrorPenalty { get; set; }
 
-		foreach (AudioSource s in gameObject.GetComponents<AudioSource>())
-		{
-			Destroy(s);
-		}
-	}
+    private void Init()
+    {
+        score = 0;
+        scoreText.text = "0.00%";
 
-	public void StartLevel(Level level, Difficulty diff)
-	{
-		this.level = level;
-		this.diff = diff;
-		Init();
-		List<Note> notes = GetComponent<ChartReader>().ReadChart(level.chartFile, speed, diff);
+        transform.position = Vector3.zero;
 
-		totalPossScore = 0;
-		foreach (Note n in notes)
-		{
-			totalPossScore += (int) n.length;
-		}
+        foreach (AudioSource s in gameObject.GetComponents<AudioSource>())
+        {
+            Destroy(s);
+        }
+    }
 
-		foreach (AudioClip clip in level.musicFiles)
-		{
-			AudioSource s = gameObject.AddComponent<AudioSource>();
-			s.clip = clip;
-			s.Play();
-		}
-		_isRunning = true;
-	}
+    public void StartLevel(Level level, Difficulty diff)
+    {
+        this.level = level;
+        this.diff = diff;
+        Init();
+        List<Note> notes = GetComponent<ChartReader>().ReadChart(level.chartFile, speed, diff);
 
-	public void RestartLevel()
-	{
-		StartLevel(this.level, this.diff);
-	}
+        totalPossScore = 0;
+        foreach (Note n in notes)
+        {
+            totalPossScore += (int) n.length;
+        }
 
-	public void SetAudioPlaying(bool play)
-	{
-		foreach (AudioSource s in gameObject.GetComponents<AudioSource>()) 
-		{
-			if (play) s.UnPause(); else s.Pause();
-		}
-	}
+        foreach (AudioClip clip in level.musicFiles)
+        {
+            AudioSource s = gameObject.AddComponent<AudioSource>();
+            s.clip = clip;
+            s.Play();
+        }
+        _isRunning = true;
+    }
+
+    public void RestartLevel()
+    {
+        StartLevel(this.level, this.diff);
+    }
+
+    public void SetAudioPlaying(bool play)
+    {
+        foreach (AudioSource s in gameObject.GetComponents<AudioSource>()) 
+        {
+            if (play) s.UnPause(); else s.Pause();
+        }
+    }
 
 
-	void Update () {
-		// Move the "highway" towards the player
-		if (_isRunning) transform.Translate(-Vector3.forward * speed * Time.deltaTime);
-	}
+    void Update () {
+        // Move the "highway" towards the player
+        if (_isRunning) transform.Translate(-Vector3.forward * speed * Time.deltaTime);
+    }
 
-	// Placeholder scoring system for testing
-	public void ReportNoteHit(/*Vector3 position*/)
-	{
+    // Placeholder scoring system for testing
+    public void ReportNoteHit(/*Vector3 position*/)
+    {
         //lastPositionHit = position;
-		score += hitScoreIncrease;
-		UpdateScoreText();
-	}
+        score += hitScoreIncrease;
+        UpdateScoreText();
+    }
 
-	public void ReportFretboardHit(/*Vector3 position*/)
-	{
+    public void ReportFretboardHit(/*Vector3 position*/)
+    {
         //if ()
-		score -= mistakePenalty;
-		UpdateScoreText();
-	}
+        ErrorPenalty = true;
+        score -= errorPenalty;
+        UpdateScoreText();
+        StartCoroutine(ErrorPenaltyTimer());
+        
+    }
 
-	public void HeldNoteIncreaseScore()
-	{
-		score++;
-		UpdateScoreText();
-	}
+    private IEnumerator ErrorPenaltyTimer()
+    {
+        yield return new WaitForSeconds(errorPenaltyTime);
+        ErrorPenalty = false;
+    }
 
-	private void UpdateScoreText()
-	{
+    public void HeldNoteIncreaseScore()
+    {
+        score++;
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
         float ratio = ((score / (float) totalPossScore));
         if (ratio < 0) ratio = 0;
-		scoreText.text = string.Format("{0:0.00%}", ratio);
-	}
+        string scoreStr = string.Format("{0:0.00%}%", ratio);
+        scoreText.text = scoreStr;
+    }
 
 }

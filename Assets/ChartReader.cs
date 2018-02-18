@@ -182,7 +182,7 @@ public class ChartReader : MonoBehaviour
 			button.GetComponent<ButtonController>().SetLength(length);			
 			tail.SetParent(button);
 		}		
-		if (button.position.z < Camera.main.farClipPlane) button.GetComponent<Renderer>().enabled = true;
+		if (button.position.z < Camera.main.farClipPlane) button.GetComponentInChildren<Renderer>().enabled = true;
 	}
 
 	// This code is taken without much change from the Moonscraper Guitar Hero Chart Editor
