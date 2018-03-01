@@ -45,7 +45,7 @@ namespace Leap.Unity.Query {
 
     /// <summary>
     /// Returns a new query operation representing the current query operation but without a
-    /// certain number of the elements at the start.  This method is safe to call with a skip
+    /// certain number of the elements at the tickStart.  This method is safe to call with a skip
     /// amount that is larger than the number of elements in the sequence.
     /// 
     /// For example:

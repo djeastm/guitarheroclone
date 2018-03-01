@@ -5,12 +5,18 @@ using UnityEngine;
 
 public class ButtonController : MonoBehaviour {
 
+    public int _sensitivity = 300;
+
+    //References
     private LevelController levelController;
     private InteractionBehaviour interactionBehaviour;
-    Renderer rend;
-    Color hitColor;
-    Color origColor;
-    bool validTouch;
+    private Renderer rend;
+    private Color hitColor;
+    private Color origColor;
+
+    private int sensitivityCounter = 1;    
+    
+    bool validTouch;    
 
     void Awake()
     {
@@ -30,29 +36,26 @@ public class ButtonController : MonoBehaviour {
     public void ReportStrike()
     {
         rend.material.color = hitColor;
-        validTouch = true;
-        //StartCoroutine(AutoValidTouchShutOff()); // 
+        validTouch = true;        
     }
 
-    //IEnumerator AutoValidTouchShutOff()
-    //{
-    //    yield return new WaitForSeconds(0.1f);
-    //    validTouch = false;
-    //}
-
     public void ReportExit()
-    {
-        //Debug.Log("ReportExit");
-        rend.material.color = origColor;
-        //validTouch = false;
+    {        
+        rend.material.color = origColor;        
     }
 
     void OnContactStay()
     {
-        if (!validTouch)
+        if (sensitivityCounter % _sensitivity == 0)
         {
-            levelController.ReportMissedHit();
+            if (!validTouch)
+            {
+                //Debug.Log("Invalid touch");
+                levelController.ReportInvalidButtonPress();
+            }
         }
+        sensitivityCounter++;
+        
     }
 
 }

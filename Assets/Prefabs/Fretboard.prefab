@@ -24,7 +24,6 @@ GameObject:
   - component: {fileID: 23771976488677700}
   - component: {fileID: 54886679070450676}
   - component: {fileID: 114700762715181506}
-  - component: {fileID: 114342129639929288}
   m_Layer: 0
   m_Name: Fretboard
   m_TagString: Untagged
@@ -115,18 +114,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114342129639929288
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1042676190798792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcf730d993ae97b45b610e849af7d2c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitColor: {r: 0.9117647, g: 0.64644116, b: 0.8824875, a: 0.572}
 --- !u!114 &114700762715181506
 MonoBehaviour:
   m_ObjectHideFlags: 1

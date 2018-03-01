@@ -24,7 +24,6 @@ GameObject:
   - component: {fileID: 23717531063082162}
   - component: {fileID: 54651840887946252}
   - component: {fileID: 114162038721405306}
-  - component: {fileID: 114703143812252434}
   m_Layer: 0
   m_Name: 3_Yellow Note
   m_TagString: Untagged
@@ -143,14 +142,3 @@ MonoBehaviour:
     layerIndex: 0
   _eventTable:
     _entries: []
---- !u!114 &114703143812252434
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1705427372372058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32b863e14bb9c674baeb04be354a556c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

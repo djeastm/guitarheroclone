@@ -24,7 +24,6 @@ GameObject:
   - component: {fileID: 23732626174442698}
   - component: {fileID: 54018554419796716}
   - component: {fileID: 114757648677728428}
-  - component: {fileID: 114769194748403434}
   m_Layer: 0
   m_Name: 1_Green Note
   m_TagString: Untagged
@@ -143,14 +142,3 @@ MonoBehaviour:
     layerIndex: 0
   _eventTable:
     _entries: []
---- !u!114 &114769194748403434
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1163640261052438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32b863e14bb9c674baeb04be354a556c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

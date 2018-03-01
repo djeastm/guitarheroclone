@@ -22,7 +22,7 @@ namespace Leap.Unity {
     protected GameObject testObj;
 
     /// <summary>
-    /// Should be called at the start of a test. The argument is the name of a prefab to
+    /// Should be called at the tickStart of a test. The argument is the name of a prefab to
     /// spawn, or the name of a GameObject in the current scene.
     /// 
     /// This method populates the testObj field with the loaded or spawned object.

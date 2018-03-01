@@ -228,7 +228,7 @@ namespace Leap.Unity.Animation {
 
     /// <summary>
     /// Specifies an action to be called whenever this Tween is Played
-    /// forward when at the start.
+    /// forward when at the tickStart.
     /// </summary>
     public Tween OnLeaveStart(Action action) {
       throwIfInvalid();
@@ -238,7 +238,7 @@ namespace Leap.Unity.Animation {
 
     /// <summary>
     /// Specifies an action to be called whenever this Tween reaches
-    /// the start.
+    /// the tickStart.
     /// </summary>
     public Tween OnReachStart(Action action) {
       throwIfInvalid();

@@ -26,7 +26,7 @@ namespace Leap.Unity.Animation {
     [Tooltip("The transform to which to apply the tweened properties.")]
     public Transform targetTransform;
 
-    [Tooltip("The transform whose position/rotation/localScale provide the start state of the tween.")]
+    [Tooltip("The transform whose position/rotation/localScale provide the tickStart state of the tween.")]
     public Transform startTransform;
     [Tooltip("The transform whose position/rotation/localScale provide the end state of the tween.")]
     public Transform endTransform;
@@ -66,8 +66,8 @@ namespace Leap.Unity.Animation {
     void OnValidate() {
       if (targetTransform != null) {
         if (startTransform == targetTransform) {
-          Debug.LogError("The start transform of the TransformTweenBehaviour should be "
-                       + "a different transform than the target transform; the start "
+          Debug.LogError("The tickStart transform of the TransformTweenBehaviour should be "
+                       + "a different transform than the target transform; the tickStart "
                        + "transform provides starting position/rotation/scale information "
                        + "for the tween.", this.gameObject);
         }

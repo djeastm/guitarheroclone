@@ -390,7 +390,7 @@ namespace Leap.Unity.RuntimeGizmos {
       _operationCountOnGuard = -1;
 
       if (wereGizmosDrawn) {
-        Debug.LogError("New gizmos were drawn to the front buffer!  Make sure to never keep a reference to a Drawer, always get a new one every time you want to start drawing.");
+        Debug.LogError("New gizmos were drawn to the front buffer!  Make sure to never keep a reference to a Drawer, always get a new one every time you want to tickStart drawing.");
       }
     }
 
@@ -542,7 +542,7 @@ namespace Leap.Unity.RuntimeGizmos {
     }
 
     /// <summary>
-    /// Draws a wire gizmo capsule at the given position, with the given start and end points and radius.
+    /// Draws a wire gizmo capsule at the given position, with the given tickStart and end points and radius.
     /// </summary>
     public void DrawWireCapsule(Vector3 start, Vector3 end, float radius) {
       Vector3 up = (end - start).normalized * radius;

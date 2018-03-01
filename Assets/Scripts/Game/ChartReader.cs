@@ -20,7 +20,7 @@ public class ChartReader : MonoBehaviour
         fretboardScale = speed;
         chart = ParseChart(chartFile.text.ToString());
         List<Note> notes = SpawnNotes(chart, diff);
-        fretboardTime = TickToTime(chart, notes[notes.Count - 1].start, chart.Resolution) + TickToTime(chart, (int)chart.Offset, chart.Resolution);
+        fretboardTime = TickToTime(chart, notes[notes.Count - 1].tickStart, chart.Resolution) + TickToTime(chart, (int)chart.Offset, chart.Resolution);
         SpawnFretboard(fretboardPrefab,Vector3.zero,fretboardTime);
         SpawnButtons();
         return chart;
@@ -48,7 +48,7 @@ public class ChartReader : MonoBehaviour
         c.Charter = nameData[2].Trim().Split('=')[1].Trim();		
         c.Offset = float.Parse(nameData[3].Trim().Split('=')[1].Trim());
         // Offset might be used differently here than by GH
-        // It is the amount of ticks to push up the start of the notes
+        // It is the amount of ticks to push up the tickStart of the notes
         c.Resolution = int.Parse(nameData[4].Trim().Split('=')[1].Trim());
         c.Player2 = nameData[5].Trim().Split('=')[1].Trim();
         c.Difficulty = int.Parse(nameData[6].Trim().Split('=')[1].Trim());
@@ -97,11 +97,10 @@ public class ChartReader : MonoBehaviour
 
         // Section 4 (index3) is the first guitar track
         c.Notes = new Dictionary<Difficulty, List<Note>>();
-        //Debug.Log("section count: " + sections.Count);
+        
         for (int i = 3; i < sectionNames.Count; i++)
-        {
-            //Debug.Log(i + " " + sectionNames[i]);
-            c.Notes.Add(ParseDifficulty(sectionNames[i]), ParseNotes(sections[i]));
+        {            
+            c.Notes.Add(ParseDifficulty(sectionNames[i]), ParseNotes(c, sections[i]));
         }
 
         return c;
@@ -117,20 +116,21 @@ public class ChartReader : MonoBehaviour
         return Difficulty.Expert;
     }
 
-    List<Note> ParseNotes(string section)
+    List<Note> ParseNotes(Chart c, string section)
     {
         string[] notesData = section.Trim().Split('\n');
         
         List<Note> notes = new List<Note>();
+        int id = 1;
         for (int i = 0; i < notesData.Length; i++)
         {
-            //Debug.Log(i);
             Note n = new Note();
             if (notesData[i].Length > 3) // skip blanks
             {
                 string[] noteData = notesData[i].Trim().Split('=');
-                //Debug.Log(noteData[1]);
-                n.start = int.Parse(noteData[0].Trim());
+                
+                n.id = id++;
+                n.tickStart = int.Parse(noteData[0].Trim());
 
                 n.type = noteData[1].Trim().Split(' ')[0];
                 if (n.type != "N") continue; // Ignore things other than straight notes (S or E) for now
@@ -138,7 +138,9 @@ public class ChartReader : MonoBehaviour
                 n.button = int.Parse(noteData[1].Trim().Split(' ')[1]);
                 // 0-4 is green-orange buttons, 5 is force flag (?), 6 is tap note, 7 is open note
                 if (n.button > 4) continue; // Ignore 5, 6, or 7 notes
-                n.length = int.Parse(noteData[1].Trim().Split(' ')[2]);
+                n.tickLength = int.Parse(noteData[1].Trim().Split(' ')[2]);
+                n.secLength = TickToTime(c, n.tickLength, c.Resolution);                
+                n.secStart = TickToTime(c, n.tickStart, c.Resolution);
                 notes.Add(n);
             }
         }
@@ -160,35 +162,39 @@ public class ChartReader : MonoBehaviour
     //Spawn single note
     float SpawnNote(Chart c, Note note)
     {
-        // Subtract the offset from the note's start position
-        Vector3 point = new Vector3(0f, 0f, TickToTime(c, note.start, c.Resolution) - TickToTime(c, (int)c.Offset, c.Resolution));
-        // When spawning the prefab, convert the length from ticks to time
-        SpawnPrefab(notePrefabs[note.button], point, TickToTime(c, note.length, c.Resolution));
+        // Subtract the offset from the note's tickStart position
+        Vector3 point = new Vector3(0f, 0f, note.secStart - TickToTime(c, (int)c.Offset, c.Resolution));
+        // When spawning the prefab, convert the tickLength from ticks to time
+        SpawnPrefab(note, notePrefabs[note.button], point, note.secLength);
         return point.z;
     }
 
-    void SpawnPrefab(Transform prefab, Vector3 point, float length)
+    void SpawnPrefab(Note noteData, Transform prefab, Vector3 point, float length)
     {
-        Transform button = Instantiate(prefab);
-        button.SetParent(transform);
-        button.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
-        if (length != 0) // There's a held note, so spawn a 'tail' on the note
+        Transform note = Instantiate(prefab);
+        note.SetParent(transform);
+        note.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
+        note.gameObject.AddComponent<NoteController>();
+        note.GetComponent<NoteController>().note = noteData;
+        if (length > 0) // There's a held note, so spawn a 'tail' on the note
         {
             Transform tail = Instantiate(prefab);
-            tail.SetParent(button.transform);
+            tail.SetParent(note.transform);
             // We want to push the tail back by half to line up with the end of the note
-            tail.position = new Vector3(button.position.x, button.position.y, point.z + length / 2f);
-            // Then we reshape our note prefab to make a tail of the correct length
+            tail.position = new Vector3(note.position.x, note.position.y, point.z + length / 2f);
+            // Then we reshape our note prefab to make a tail of the correct tickLength
             tail.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, length);
-            // We tell the button that its tail has this length, so they can be destroyed correctly
-            tail.GetComponent<NoteController>().SetLength(length);
-            button.GetComponent<NoteController>().SetLength(length);			
-            tail.SetParent(button);
+            // We tell the note about its tail and the tickLength, so they can be destroyed correctly           
+            TailController tc = tail.gameObject.AddComponent<TailController>();
+            tc.note = noteData;
+            note.GetComponent<NoteController>().AttachTail(tc);
+            note.GetComponent<NoteController>().SetLength(length);
+            tail.SetParent(note);
         }		
-        if (button.position.z < Camera.main.farClipPlane) button.GetComponentInChildren<Renderer>().enabled = true;
+        if (note.position.z < Camera.main.farClipPlane) note.GetComponentInChildren<Renderer>().enabled = true;
     }
 
-    // This code is taken without much change from the Moonscraper Guitar Hero Chart Editor
+    // This function is taken without much change from the Moonscraper Guitar Hero Chart Editor
     // By Alexander "FireFox" Ong
     float TickToTime(Chart c, int tick, int resolution)
     {
@@ -218,7 +224,7 @@ public class ChartReader : MonoBehaviour
         return (float)time;
     }
 
-    // This code is taken without much change from the Moonscraper Guitar Hero Chart Editor
+    // This function is taken without much change from the Moonscraper Guitar Hero Chart Editor
     // By Alexander "FireFox" Ong
     public static double DisToTime(int tickStart, int tickEnd, float resolution, float bpm, int fretboardScale)
     {
