@@ -175,7 +175,7 @@ public class ChartReader : MonoBehaviour
         if (length != 0) // There's a held note, so spawn a 'tail' on the note
         {
             Transform tail = Instantiate(prefab);
-            tail.SetParent(transform);
+            tail.SetParent(button.transform);
             // We want to push the tail back by half to line up with the end of the note
             tail.position = new Vector3(button.position.x, button.position.y, point.z + length / 2f);
             // Then we reshape our note prefab to make a tail of the correct length

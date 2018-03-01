@@ -83,7 +83,8 @@ public class LevelController : MonoBehaviour {
         if (_isRunning)
         {
             transform.Translate(-Vector3.forward * speed * Time.deltaTime);
-            timeSlider.value = songAudioSources[0].time / songAudioSources[0].clip.length;
+            if (songAudioSources[0] != null)
+                timeSlider.value = songAudioSources[0].time / songAudioSources[0].clip.length;
         }
     }
 
