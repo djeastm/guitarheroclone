@@ -44,10 +44,10 @@ public class LevelController : MonoBehaviour
     // Used for last X amount of notes (i.e. Recent Performance)
     private Queue<NoteData> _recentNotes;
     private float[] _secondsRSQTable;
-    private float _perfScoreNotesHit;
-    private float _perfScoreNotesTotal;
-    private float _perfScoreSecondsHit;
-    private float _perfScoreSecondsTotal;    
+    private float _recentScoreNotesHit;
+    private float _recentScoreNotesTotal;
+    private float _recentScoreSecondsHit;
+    private float _recentScoreSecondsTotal;    
 
     private void Init()
     {
@@ -90,6 +90,7 @@ public class LevelController : MonoBehaviour
 
         _secondsRSQTable = CreateRSQTable(_totalNumberNotes, secondsTable);
 
+        for (int k = 0; k < 10; k++) Debug.Log(_secondsRSQTable[k]);
         foreach (AudioClip clip in lev.musicFiles)
         {
             AudioSource s = gameObject.AddComponent<AudioSource>();
@@ -118,7 +119,7 @@ public class LevelController : MonoBehaviour
     }
 
     private float RangeSumQuery(float[] table, int i, int j)
-    {
+    {        
         return (i > 0) ? table[j] - table[i - 1] : 0;
     }
 
@@ -171,14 +172,18 @@ public class LevelController : MonoBehaviour
     private void UpdatePerformanceScore(NoteData nd)
     {
         //Debug.Log(nd.id);
-        if (nd.id == 0) return;
-        int j = nd.id;
-                
-        _perfScoreNotesTotal = (nd.id < lookbackNotes)? nd.id : lookbackNotes;
-        _perfScoreSecondsTotal = RangeSumQuery(_secondsRSQTable, j-lookbackNotes, j);
+        if (nd.id == 0) return; // Don't want non-notes (i.e. missed hits) counted
 
-        _perfScoreNotesHit = 0;
-        _perfScoreSecondsHit = 0;        
+        _recentScoreNotesTotal = (nd.id < lookbackNotes)? nd.id : lookbackNotes;
+
+        int j = nd.id;
+        int i = j - lookbackNotes;
+        if (i < 1) i = 1;
+
+        _recentScoreSecondsTotal = RangeSumQuery(_secondsRSQTable, i, j);
+
+        _recentScoreNotesHit = 0;
+        _recentScoreSecondsHit = 0;        
 
         _recentNotes.Enqueue(nd);
 
@@ -187,9 +192,9 @@ public class LevelController : MonoBehaviour
             //Debug.Log(n.id+" : "+n.secStart + " : " + n.hit + " : " + n.isTail);            
             if (n.hit)
             {
-                _perfScoreNotesHit++;
+                _recentScoreNotesHit++;
                 if (n.isTail)
-                    _perfScoreSecondsHit += (float) n.framesHit / FPS;
+                    _recentScoreSecondsHit += (float) n.framesHit / FPS;
             }            
         }
 
@@ -201,41 +206,39 @@ public class LevelController : MonoBehaviour
         float noteRatio = (float) _notesHit / _totalNumberNotes;
         float tickRatio = (float) _secondsHit / _totalTailSeconds;
 
-        float scoreRatio = (noteRatio + tickRatio / 2);
+        float overallScoreRatio = (noteRatio + tickRatio / 2);
         
-        float perfScoreNoteRatio;
-        float perfScoreSecondsRatio = 0;
-        float recentPerformanceScore;
+        float recentScoreNoteRatio;
+        float recentScoreSecondsRatio = 0;
+        float recentScoreRatio;
         
-        if (_perfScoreNotesTotal > 0 && _perfScoreSecondsTotal > 0)
+        if (_recentScoreNotesTotal > 0 && _recentScoreSecondsTotal > 0)
         {
-            perfScoreNoteRatio = _perfScoreNotesHit / _perfScoreNotesTotal;
-            perfScoreSecondsRatio = _perfScoreSecondsHit / _perfScoreSecondsTotal;
-            recentPerformanceScore = (perfScoreNoteRatio + perfScoreSecondsRatio) / 2;
+            recentScoreNoteRatio = _recentScoreNotesHit / _recentScoreNotesTotal;
+            recentScoreSecondsRatio = _recentScoreSecondsHit / _recentScoreSecondsTotal;
+            recentScoreRatio = (recentScoreNoteRatio + recentScoreSecondsRatio) / 2;
         }
-        else if (_perfScoreNotesTotal > 0)
+        else if (_recentScoreNotesTotal > 0)
         {
-            perfScoreNoteRatio = _perfScoreNotesHit / _perfScoreNotesTotal;
-            recentPerformanceScore = perfScoreNoteRatio;
+            recentScoreNoteRatio = _recentScoreNotesHit / _recentScoreNotesTotal;
+            recentScoreRatio = recentScoreNoteRatio;
         }
-        else if (_perfScoreSecondsTotal > 0)
+        else if (_recentScoreSecondsTotal > 0)
         {
-            perfScoreSecondsRatio = _perfScoreSecondsHit / _perfScoreSecondsTotal;
-            recentPerformanceScore = perfScoreSecondsRatio;
+            recentScoreSecondsRatio = _recentScoreSecondsHit / _recentScoreSecondsTotal;
+            recentScoreRatio = recentScoreSecondsRatio;
         }
-        else recentPerformanceScore = 1;
-        //Debug.Log(recentPerformanceScore);
+        else recentScoreRatio = 0.5f;       
 
-        UpdateScoreVisuals(scoreRatio, recentPerformanceScore);
+        UpdateScoreVisuals(overallScoreRatio, recentScoreRatio);
     }
 
     private void UpdateScoreVisuals(float scoreRatio, float recentPerformanceScore)
     {        
-        float ratio = recentPerformanceScore;
         string scoreStr = string.Format("{0:0.00%}", scoreRatio);
         
         scoreText.text = scoreStr;
-        scoreSlider.value = ratio;
+        scoreSlider.value = recentPerformanceScore;
     }
 
     void Update()

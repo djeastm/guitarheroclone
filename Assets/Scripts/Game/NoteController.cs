@@ -77,16 +77,12 @@ public class NoteController : MonoBehaviour
             noteData.hit = true;
             hit = true;
             if (noteData.secLength > 0)
-                this.tail.GetComponent<TailController>().IsEnabled = true;
+                tail.GetComponent<TailController>().IsEnabled = true;
 
             levelController.ReportNoteHit(noteData);
             triggeringButton.ReportStrike(); // so button can glow
-            //if (tickLength <= 0) Destroy(gameObject); // TODO: Animate
-            //} else if (isAtButton)
-            //{
-            //    levelController.ReportTailContact();
-            //}
-        }
+                                             //if (tickLength <= 0) Destroy(gameObject); // TODO: Animate
+        }        
         else if (!hit)
         {
             levelController.ReportInvalidButtonPress();

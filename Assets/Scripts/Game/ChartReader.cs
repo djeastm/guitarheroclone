@@ -4,12 +4,18 @@ using System.Linq;
 using UnityEngine;
 using System.Text.RegularExpressions;
 
+public class TimeSignature
+{
+    public int tick;
+    public int value;
+    public float assignedTime;
+}
+
 public class ChartReader : MonoBehaviour
 {	
     public Chart chart;
     public Transform[] notePrefabs;
     public Transform[] buttonPrefabs;
-    //public Transform[] tailPrefabs; //tails are now being made from note buttons
     int fretboardScale;
     private float fretboardTime;
     public Transform fretboardPrefab;
