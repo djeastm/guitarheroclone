@@ -71,7 +71,7 @@ public class LevelController : MonoBehaviour
         Init();
 
         ChartReader chartReader = GetComponent<ChartReader>();
-        chart = chartReader.ReadChart(lev.chartFile, speed, diff);
+        chart = chartReader.ReadChart(_level.chartFile, speed, diff);
         List<Note> thisChartNotes = chart.Notes[diff];
 
         _totalNumberNotes = thisChartNotes.Count;
@@ -89,9 +89,8 @@ public class LevelController : MonoBehaviour
         }
 
         _secondsRSQTable = CreateRSQTable(_totalNumberNotes, secondsTable);
-
-        for (int k = 0; k < 10; k++) Debug.Log(_secondsRSQTable[k]);
-        foreach (AudioClip clip in lev.musicFiles)
+        
+        foreach (AudioClip clip in _level.musicFiles)
         {
             AudioSource s = gameObject.AddComponent<AudioSource>();
             s.clip = clip;
@@ -109,6 +108,7 @@ public class LevelController : MonoBehaviour
         return totalSeconds;
     }
 
+    // Range Sum Query
     private float[] CreateRSQTable(int n, float[] elements)
     {
         for (int i = 1; i < n; i++)
@@ -204,9 +204,9 @@ public class LevelController : MonoBehaviour
     private void UpdateScore()
     {
         float noteRatio = (float) _notesHit / _totalNumberNotes;
-        float tickRatio = (float) _secondsHit / _totalTailSeconds;
+        float secondsRatio = (float) _secondsHit / _totalTailSeconds;
 
-        float overallScoreRatio = (noteRatio + tickRatio / 2);
+        float overallScoreRatio = (noteRatio + secondsRatio / 2);
         
         float recentScoreNoteRatio;
         float recentScoreSecondsRatio = 0;
