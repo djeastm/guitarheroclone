@@ -10,16 +10,16 @@ public class TailController : NoteController {
     protected override void Start()
     {
         base.Start();
-        noteData.isTail = true;
+        _noteData.isTail = true;
     }
 
     public override void OnContactStay()
     {
         if (IsEnabled & isAtButton)
         {
-            noteData.framesHit += this.FramesHit;
+            _noteData.framesHit += this.FramesHit;
 
-            levelController.ReportTailContact(noteData);
+            levelController.ReportTailContact(_noteData);
             FramesHit++;
         }
     }

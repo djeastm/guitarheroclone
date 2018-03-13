@@ -175,29 +175,29 @@ public class ChartReader : MonoBehaviour
         return point.z;
     }
 
-    void SpawnPrefab(Note noteData, Transform prefab, Vector3 point, float length)
+    void SpawnPrefab(Note note, Transform prefab, Vector3 point, float length)
     {
-        Transform note = Instantiate(prefab);
-        note.SetParent(transform);
-        note.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
-        note.gameObject.AddComponent<NoteController>();
-        note.GetComponent<NoteController>().note = noteData;
+        Transform noteTransform = Instantiate(prefab);
+        noteTransform.SetParent(transform);
+        noteTransform.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
+        noteTransform.gameObject.AddComponent<NoteController>();
+        noteTransform.GetComponent<NoteController>().InitializeNote(note);
         if (length > 0) // There's a held note, so spawn a 'tail' on the note
         {
             Transform tail = Instantiate(prefab);
-            tail.SetParent(note.transform);
+            tail.SetParent(noteTransform.transform);
             // We want to push the tail back by half to line up with the end of the note
-            tail.position = new Vector3(note.position.x, note.position.y, point.z + length / 2f);
+            tail.position = new Vector3(noteTransform.position.x, noteTransform.position.y, point.z + length / 2f);
             // Then we reshape our note prefab to make a tail of the correct tickLength
             tail.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, length);
             // We tell the note about its tail and the tickLength, so they can be destroyed correctly           
             TailController tc = tail.gameObject.AddComponent<TailController>();
-            tc.note = noteData;
-            note.GetComponent<NoteController>().AttachTail(tc);
-            note.GetComponent<NoteController>().SetLength(length);
-            tail.SetParent(note);
+            tc.InitializeNote(note);
+            noteTransform.GetComponent<NoteController>().AttachTail(tc);
+            noteTransform.GetComponent<NoteController>().SetLength(length);
+            tail.SetParent(noteTransform);
         }		
-        if (note.position.z < Camera.main.farClipPlane) note.GetComponentInChildren<Renderer>().enabled = true;
+        if (noteTransform.position.z < Camera.main.farClipPlane) noteTransform.GetComponentInChildren<Renderer>().enabled = true;
     }
 
     // This function is taken without much change from the Moonscraper Guitar Hero Chart Editor

@@ -18,28 +18,34 @@ public class NoteController : MonoBehaviour
     protected LevelController levelController;
     InteractionBehaviour interactionBehaviour;
 
-    public Note note;
-    public bool hit;
+    private Note note;
+    protected NoteData _noteData;
     protected bool isAtButton;
     protected ButtonController triggeringButton;
     protected float length;
     private TailController tail;
-    protected NoteData noteData;
+    
 
-    void Awake () {
+    void Awake()
+    {
         levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
         interactionBehaviour = GetComponent<InteractionBehaviour>();
     }
 
-    protected virtual void Start()
-    {   
-        interactionBehaviour.OnContactStay += OnContactStay;
-        noteData = new NoteData
+    // Called by ChartReader when instantiating note
+    public void InitializeNote(Note note)
+    {
+        _noteData = new NoteData
         {
             id = note.id,
             secLength = note.secLength,
             secStart = note.secStart
         };
+    }
+
+    protected virtual void Start()
+    {
+        interactionBehaviour.OnContactStay += OnContactStay;        
     }
 
     protected virtual void Update()
@@ -49,7 +55,7 @@ public class NoteController : MonoBehaviour
         // Destroy the note when it's done and any tail has passed
         if (transform.position.z < (-1 - length))
         {
-            levelController.ReportDestroyedNote(noteData);
+            levelController.ReportDestroyedNote(_noteData);
             Destroy(gameObject);
         }
     }
@@ -58,7 +64,7 @@ public class NoteController : MonoBehaviour
     {
         if (other.GetComponentInParent<ButtonController>() != null)
         {
-            if (!hit) triggeringButton = other.GetComponentInParent<ButtonController>();
+            if (!_noteData.hit) triggeringButton = other.GetComponentInParent<ButtonController>();
             isAtButton = true;
         }
     }
@@ -70,30 +76,28 @@ public class NoteController : MonoBehaviour
 
     public virtual void OnContactStay()
     {
-
-        if (!hit && isAtButton)
-        {           
-            // TODO: Clean this up
-            noteData.hit = true;
-            hit = true;
-            if (noteData.secLength > 0)
+        if (!_noteData.hit && isAtButton)
+        {
+            // TODO: Clean this up            
+            _noteData.hit = true;
+            if (_noteData.secLength > 0)
                 tail.GetComponent<TailController>().IsEnabled = true;
 
-            levelController.ReportNoteHit(noteData);
+            levelController.ReportNoteHit(_noteData);
             triggeringButton.ReportStrike(); // so button can glow
-                                             //if (tickLength <= 0) Destroy(gameObject); // TODO: Animate
-        }        
-        else if (!hit)
+            //if (tickLength <= 0) Destroy(gameObject); // TODO: Animate
+        }
+        else if (!_noteData.hit)
         {
             levelController.ReportInvalidButtonPress();
         }
     }
-    
+
     public void SetLength(float length)
     {
         // Gets called when created by ChartReader so that tails won't disappear too soon when destroyed
         this.length = length;
-        noteData.secLength = length;
+        _noteData.secLength = length;
     }
 
     public void AttachTail(TailController addedTail)

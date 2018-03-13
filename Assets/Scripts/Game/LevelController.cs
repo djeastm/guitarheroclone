@@ -147,7 +147,7 @@ public class LevelController : MonoBehaviour
     {
         UpdatePerformanceScore(new NoteData());
         if (allowErrors) {
-            //Debug.Log("Invalid touch");
+            Debug.Log("Level Controller: Invalid touch");
             _secondsHit = (int) (_secondsHit * (1 - errorPenaltyPercentDrop));
             if (_secondsHit < 1) _secondsHit = 0;
             UpdateScore();

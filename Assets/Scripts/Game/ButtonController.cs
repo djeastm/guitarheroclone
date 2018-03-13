@@ -14,9 +14,9 @@ public class ButtonController : MonoBehaviour {
     private Color hitColor;
     private Color origColor;
 
-    private int sensitivityCounter = 1;    
+    private int _sensitivityCounter = 1;    
     
-    bool validTouch;    
+    bool _validTouch;    
 
     void Awake()
     {
@@ -33,28 +33,29 @@ public class ButtonController : MonoBehaviour {
         interactionBehaviour.OnContactStay += OnContactStay;
     }
 
-    public void ReportStrike()
+    public void OnNoteStay()
     {
         rend.material.color = hitColor;
-        validTouch = true;        
+        _validTouch = true;
     }
 
-    public void ReportExit()
-    {        
-        rend.material.color = origColor;        
-    }
+    public void OnNoteExit()
+    {
+        rend.material.color = origColor;
+        _validTouch = false;
+    }    
 
     void OnContactStay()
-    {
-        if (sensitivityCounter % _sensitivity == 0)
+    {        
+        if (_sensitivityCounter % _sensitivity == 0)
         {
-            if (!validTouch)
+            if (!_validTouch)
             {
-                //Debug.Log("Invalid touch");
+                Debug.Log("Button Controller: Invalid touch");
                 levelController.ReportInvalidButtonPress();
             }
         }
-        sensitivityCounter++;
+        _sensitivityCounter++;
         
     }
 
