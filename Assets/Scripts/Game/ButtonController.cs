@@ -33,25 +33,25 @@ public class ButtonController : MonoBehaviour {
         interactionBehaviour.OnContactStay += OnContactStay;
     }
 
-    public void OnNoteStay()
+    public void ReportStrike()
     {
         rend.material.color = hitColor;
-        _validTouch = true;
+        _validTouch = true;        
     }
 
-    public void OnNoteExit()
-    {
+    public void ReportExit()
+    {        
         rend.material.color = origColor;
         _validTouch = false;
-    }    
+    }
 
     void OnContactStay()
-    {        
+    {
         if (_sensitivityCounter % _sensitivity == 0)
         {
             if (!_validTouch)
             {
-                Debug.Log("Button Controller: Invalid touch");
+                Debug.Log("Invalid touch");
                 levelController.ReportInvalidButtonPress();
             }
         }
