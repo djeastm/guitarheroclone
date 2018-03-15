@@ -3,60 +3,126 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ButtonController : MonoBehaviour {
+public class ButtonController : MonoBehaviour
+{
 
-    public int _sensitivity = 300;
+    public int _sensitivity;
 
-    //References
+    //References    
     private LevelController levelController;
     private InteractionBehaviour interactionBehaviour;
-    private Renderer rend;
-    private Color hitColor;
-    private Color origColor;
 
-    private int _sensitivityCounter = 1;    
+    //Audio
+    private AudioSource soundEffects;
+    public AudioClip missSound;
+    //public AudioClip hitSound;
+
+    // Position
+    private Vector3 BUTTON_START_POS;
+    public float _buttonDepth;
+
+    private int _sensitivityCounter = 1;
+
+    bool _isContacted; // Button is being contacted by the Leap Motion hands    
     
-    bool _validTouch;    
+    List<NoteController> _currentNotes;
 
     void Awake()
     {
         levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
         interactionBehaviour = GetComponent<InteractionBehaviour>();
+        soundEffects = GetComponent<AudioSource>();
+        _currentNotes = new List<NoteController>();
+        BUTTON_START_POS = transform.position;
+    }
 
-        rend = GetComponentInChildren<Renderer>();
-        hitColor = new Color(1f, 1f, 1f);
-        origColor = rend.material.color;
+    private void Update()
+    {
+        if (_isContacted) PressButton();
+        else { UnpressButton(); }
     }
 
     void Start()
     {
         interactionBehaviour.OnContactStay += OnContactStay;
+        interactionBehaviour.OnContactBegin += OnContactBegin;
+        interactionBehaviour.OnContactEnd += OnContactEnd;
     }
 
-    public void ReportStrike()
+    public void OnNoteEnter(NoteController noteCtrl)
     {
-        rend.material.color = hitColor;
-        _validTouch = true;        
+        _currentNotes.Add(noteCtrl);
     }
 
-    public void ReportExit()
+    public void OnNoteExit(NoteController noteCtrl)
     {        
-        rend.material.color = origColor;
-        _validTouch = false;
+        if (_currentNotes.Count > 0)
+            _currentNotes.Remove(noteCtrl);
+    }
+
+
+    //Leap Motion
+    void OnContactBegin()
+    {
+        _isContacted = true;        
     }
 
     void OnContactStay()
-    {
-        if (_sensitivityCounter % _sensitivity == 0)
+    {        
+        if (_currentNotes.Count > 0)
         {
-            if (!_validTouch)
+            
+            if (!_currentNotes[0].GetNoteData().IsHit
+                && !_currentNotes[0].GetNoteData().IsTail)
             {
-                Debug.Log("Invalid touch");
-                levelController.ReportInvalidButtonPress();
+                _currentNotes[0].OnHit();
+                _currentNotes.Remove(_currentNotes[0]);
+
+                levelController.OnSingleNoteSuccess();
+                
+            } else if (_currentNotes[0].GetNoteData().IsTail)
+            {
+                levelController.OnHeldNote();
             }
         }
-        _sensitivityCounter++;
-        
+        else
+        {   
+            if (_sensitivityCounter % _sensitivity == 0)
+            {
+                levelController.OnInvalidTouch();
+                
+                soundEffects.PlayOneShot(missSound);
+            }
+            _sensitivityCounter++;
+            
+        }        
     }
+
+    void OnContactEnd()
+    {
+        _isContacted = false;
+    }
+
+    void PressButton()
+    {
+        Transform visualization = transform.GetChild(0);
+        
+        visualization.Translate(Vector3.down * Time.deltaTime, Space.World);
+
+        if (visualization.position.y < BUTTON_START_POS.y - _buttonDepth)
+            visualization.position = new Vector3(BUTTON_START_POS.x, BUTTON_START_POS.y - _buttonDepth, BUTTON_START_POS.z);
+
+    }
+
+    void UnpressButton()
+    {
+        Transform visualization = transform.GetChild(0);
+        visualization.Translate(Vector3.up * Time.deltaTime, Space.World);
+
+        if (visualization.position.y > BUTTON_START_POS.y)
+            visualization.position = BUTTON_START_POS;
+
+    }
+
 
 }

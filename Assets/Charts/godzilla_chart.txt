@@ -3,7 +3,7 @@
 	Name = "Godzilla"
 	Artist = "Blue Oyster Cult"
 	Charter = ""
-	Offset = -120
+	Offset = -240
 	Resolution = 480	
 	Player2 = Bass
 	Difficulty = 0

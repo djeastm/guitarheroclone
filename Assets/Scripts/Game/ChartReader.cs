@@ -13,24 +13,25 @@ public class TimeSignature
 
 public class ChartReader : MonoBehaviour
 {	
-    public Chart chart;
-    public Transform[] notePrefabs;
-    public Transform[] buttonPrefabs;
-    int fretboardScale;
-    private float fretboardTime;
-    public Transform fretboardPrefab;
-    public Transform buttonSpawnParent;
+    public Chart _chart;
+    public Transform[] _notePrefabs;
+    public Transform[] _buttonPrefabs;
+    int _fretboardScale;
+    private float _fretboardTime;
+    public Transform _fretboardPrefab;
+    public Transform _buttonSpawnParent;
 
     public Chart ReadChart(TextAsset chartFile, int speed, Difficulty diff)
     {
-        fretboardScale = speed;
-        chart = ParseChart(chartFile.text.ToString());
-        List<Note> notes = SpawnNotes(chart, diff);
-        fretboardTime = TickToTime(chart, notes[notes.Count - 1].tickStart, chart.Resolution) + TickToTime(chart, (int)chart.Offset, chart.Resolution);
-        SpawnFretboard(fretboardPrefab,Vector3.zero,fretboardTime);
+        _fretboardScale = speed;
+        _chart = ParseChart(chartFile.text.ToString());
+        List<Note> notes = SpawnNotes(_chart, diff);
+        _fretboardTime = TickToTime(_chart, notes[notes.Count - 1].tickStart, _chart.Resolution) 
+            + TickToTime(_chart, notes[notes.Count - 1].tickLength, _chart.Resolution) * 2
+            + TickToTime(_chart, (int)_chart.Offset, _chart.Resolution);        
+        SpawnFretboard(_fretboardPrefab,Vector3.zero,_fretboardTime+100); //extra fretboard added for safety
         SpawnButtons();
-        return chart;
-        
+        return _chart;        
     }	
 
     Chart ParseChart(string text)
@@ -127,7 +128,7 @@ public class ChartReader : MonoBehaviour
         string[] notesData = section.Trim().Split('\n');
         
         List<Note> notes = new List<Note>();
-        int id = 1;
+        int id = 0;
         for (int i = 0; i < notesData.Length; i++)
         {
             Note n = new Note();
@@ -156,9 +157,10 @@ public class ChartReader : MonoBehaviour
     // Spawn all notes
     List<Note> SpawnNotes(Chart c, Difficulty diff)
     {
+        
         List<Note> notes = c.Notes[diff];
         foreach (Note note in notes)
-        {
+        {           
             SpawnNote(c, note);
         }
 
@@ -169,35 +171,46 @@ public class ChartReader : MonoBehaviour
     float SpawnNote(Chart c, Note note)
     {
         // Subtract the offset from the note's tickStart position
+        // Thus a negative offset pushes the start of the notes farther away from the player
         Vector3 point = new Vector3(0f, 0f, note.secStart - TickToTime(c, (int)c.Offset, c.Resolution));
-        // When spawning the prefab, convert the tickLength from ticks to time
-        SpawnPrefab(note, notePrefabs[note.button], point, note.secLength);
+        SpawnPrefab(note, _notePrefabs[note.button], point);
         return point.z;
     }
 
-    void SpawnPrefab(Note note, Transform prefab, Vector3 point, float length)
+    void SpawnPrefab(Note note, Transform prefab, Vector3 point)
     {
         Transform noteTransform = Instantiate(prefab);
         noteTransform.SetParent(transform);
         noteTransform.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
-        noteTransform.gameObject.AddComponent<NoteController>();
-        noteTransform.GetComponent<NoteController>().InitializeNote(note);
-        if (length > 0) // There's a held note, so spawn a 'tail' on the note
+        Transform noteCollider = noteTransform.GetChild(0);
+        noteCollider.gameObject.AddComponent<NoteController>();
+        noteCollider.GetComponent<NoteController>().InitializeNote(note);
+        if (note.secLength > 0) // There's a held note, so spawn a 'tail' on the note
         {
             Transform tail = Instantiate(prefab);
             tail.SetParent(noteTransform.transform);
             // We want to push the tail back by half to line up with the end of the note
-            tail.position = new Vector3(noteTransform.position.x, noteTransform.position.y, point.z + length / 2f);
-            // Then we reshape our note prefab to make a tail of the correct tickLength
-            tail.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, length);
-            // We tell the note about its tail and the tickLength, so they can be destroyed correctly           
-            TailController tc = tail.gameObject.AddComponent<TailController>();
+            tail.position = new Vector3(noteTransform.position.x, noteTransform.position.y,
+                noteTransform.position.z + (note.secLength / 2f) + (tail.localScale.z /2f));
+            // Then we reshape our prefab to make a tail of the correct Length
+            // First we handle the collider
+            Transform tailCollider = tail.GetChild(0);
+            tailCollider.localScale = new Vector3(tail.localScale.x, tail.localScale.y, 0.5f + note.secLength);
+            tailCollider.localPosition = new Vector3(tailCollider.localPosition.x, tailCollider.localPosition.y, tailCollider.localPosition.z + 0.25f);
+            // Then we shrink the renderer (to make it thinner)
+            Transform tailRenderer = tail.GetChild(1);
+            tailRenderer.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, note.secLength); 
+            TailController tc = tailCollider.gameObject.AddComponent<TailController>();
             tc.InitializeNote(note);
-            noteTransform.GetComponent<NoteController>().AttachTail(tc);
-            noteTransform.GetComponent<NoteController>().SetLength(length);
-            tail.SetParent(noteTransform);
-        }		
-        if (noteTransform.position.z < Camera.main.farClipPlane) noteTransform.GetComponentInChildren<Renderer>().enabled = true;
+            noteCollider.GetComponent<NoteController>().AttachTail(tc);
+            tail.SetParent(noteTransform.GetChild(2)); // Attach to tail spawn point
+        }
+        if (noteTransform.position.z < Camera.main.farClipPlane)
+        {
+            foreach (Renderer r in noteTransform.GetComponentsInChildren<Renderer>()) { 
+                r.enabled = true;
+            }
+        }
     }
 
     // This function is taken without much change from the Moonscraper Guitar Hero Chart Editor
@@ -220,12 +233,12 @@ public class ChartReader : MonoBehaviour
             }
             else
             {
-                time += DisToTime(prevBPM.tick, bpmInfo.tick, resolution, prevBPM.value / 1000.0f, fretboardScale);
+                time += DisToTime(prevBPM.tick, bpmInfo.tick, resolution, prevBPM.value / 1000.0f, _fretboardScale);
                 prevBPM = bpmInfo;
             }
         }
 
-        time += DisToTime(prevBPM.tick, tick, resolution, prevBPM.value / 1000.0f, fretboardScale);
+        time += DisToTime(prevBPM.tick, tick, resolution, prevBPM.value / 1000.0f, _fretboardScale);
 
         return (float)time;
     }
@@ -249,10 +262,10 @@ public class ChartReader : MonoBehaviour
 
     private void SpawnButtons()
     {
-        foreach (Transform prefab in buttonPrefabs)
+        foreach (Transform prefab in _buttonPrefabs)
         {
             Transform button = Instantiate(prefab);
-            button.SetParent(buttonSpawnParent);
+            button.SetParent(_buttonSpawnParent);
             button.position = new Vector3(prefab.position.x, prefab.position.y, 0f);
         }
     }

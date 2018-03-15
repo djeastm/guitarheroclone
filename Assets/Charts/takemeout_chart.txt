@@ -3,7 +3,7 @@
 	Name = "Take Me Out"
 	Artist = "Franz Ferdinand"
 	Charter = ""
-	Offset = -240
+	Offset = -360
 	Resolution = 480
 	Player2 = bass
 	Difficulty = 0

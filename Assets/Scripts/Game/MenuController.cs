@@ -7,115 +7,132 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class Level
 {
-	public string title;
-	public string artist;
-	public float offset;
-	public int resolution;
-	public AudioClip[] musicFiles;
-	public TextAsset chartFile;
-	public Difficulty[] difficulties;
+    public string title;
+    public string artist;
+    public float offset;
+    public int resolution;
+    public AudioClip[] musicFiles;
+    public TextAsset chartFile;
+    public Difficulty[] difficulties;
 }
 
 public class MenuController : MonoBehaviour {
 
-	LevelController levelController;
+    private LevelController _levelController;
 
-	public GameObject mainMenu;
-	public GameObject mainMenuContentPane;
-	public GameObject pauseMenu;
-	public GameObject difficultyMenu;
+    public GameObject _mainMenu;
+    public GameObject _mainMenuContentPane;
+    public GameObject _pauseMenu;
+    public GameObject _difficultyMenu;
 
-	public GameObject songSelectButtonPrefab;
-	public GameObject diffSelectButtonPrefab;
+    public GameObject _endLevelMenu;
+    public Text _endLevelOverallScore;
+    public Text _endLevelPercentage;
+    public Text _endLevelNoteStreak;
 
-	public Level[] levels;
-	private Level _currLevel;
+    public GameObject _songSelectButtonPrefab;
+    public GameObject _diffSelectButtonPrefab;
 
-	private bool isPaused;
-	private bool isLevelStarted;
+    public Level[] _levels;
+    private Level _currLevel;
 
-	void Awake()
-	{
-		levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
-	}
+    private bool _isPaused;
+    private bool _isLevelRunning;
 
-	void Start () {
-		for (int i = 0; i < levels.Length; i++) {
-			GameObject songSelectButton = Instantiate(songSelectButtonPrefab);
-			songSelectButton.transform.SetParent(mainMenuContentPane.transform);
-			songSelectButton.GetComponentInChildren<Text>()
-				.text = levels[i].title + " - " + levels[i].artist;
-			songSelectButton.GetComponent<SongSelectButtonCtrl>().id = i;
-		}
-	}
+    void Awake()
+    {
+        _levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
+    }
 
-	private void Pause()
-	{
-		Time.timeScale = 0.0f;
-		pauseMenu.SetActive(true);
-		Cursor.visible = true;
-		Cursor.lockState = CursorLockMode.None;
-		levelController.SetAudioPlaying(false);
-		isPaused = true;
-	}
+    void Start () {
+        for (int i = 0; i < _levels.Length; i++) {
+            GameObject songSelectButton = Instantiate(_songSelectButtonPrefab);
+            songSelectButton.transform.SetParent(_mainMenuContentPane.transform);
+            songSelectButton.GetComponentInChildren<Text>()
+                .text = _levels[i].title + " - " + _levels[i].artist;
+            songSelectButton.GetComponent<SongSelectButtonCtrl>().id = i;
+        }
+    }
 
-	public void Resume()
-	{
-		Time.timeScale = 1.0f;
-		pauseMenu.SetActive(false);
-		Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Locked;
-		levelController.SetAudioPlaying(true);
-		isPaused = false;
-	}
+    private void Pause()
+    {
+        Time.timeScale = 0.0f;
+        _pauseMenu.SetActive(true);
+        //Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
+        _levelController.SetAudioPlaying(false);
+        _isPaused = true;
+    }
 
-	private void Update()
-	{
-		if (isLevelStarted && Input.GetButtonDown("Cancel"))
-		{
-			if (isPaused) Resume(); else Pause();
-		}
-	}
+    public void Resume()
+    {
+        Time.timeScale = 1.0f;
+        _pauseMenu.SetActive(false);
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        _levelController.SetAudioPlaying(true);
+        _isPaused = false;
+    }
 
-	public void SelectSong(int l)
-	{
-		mainMenu.SetActive(false);
+    private void Update()
+    {
+        if (_isLevelRunning && Input.GetButtonDown("Cancel"))
+        {
+            if (_isPaused) Resume(); else Pause();
+        }
+    }
 
-		_currLevel = levels[l];
-		
-		for (int i = 0; i < _currLevel.difficulties.Length; i++)
-		{
-			//Debug.Log(_currLevel.difficulties[i]);
-			GameObject diffSelectButton = Instantiate(diffSelectButtonPrefab);
-			diffSelectButton.transform.SetParent(difficultyMenu.transform);
-			diffSelectButton.GetComponentInChildren<Text>()
-				.text = _currLevel.difficulties[i].ToString();
-			diffSelectButton.GetComponent<DiffSelectButtonCtrl>().difficulty = _currLevel.difficulties[i];
-		}
-		difficultyMenu.SetActive(true);
-		
-	}
+    public void SelectSong(int l)
+    {
+        _mainMenu.SetActive(false);
 
-	public void SelectDifficulty(Difficulty diff)
-	{
-		levelController.StartLevel(_currLevel, diff);
-		isLevelStarted = true;
-		Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Locked;
-		difficultyMenu.SetActive(false);
-	}
+        _currLevel = _levels[l];
+        
+        for (int i = 0; i < _currLevel.difficulties.Length; i++)
+        {            
+            GameObject diffSelectButton = Instantiate(_diffSelectButtonPrefab);
+            diffSelectButton.transform.SetParent(_difficultyMenu.transform);
+            diffSelectButton.GetComponentInChildren<Text>()
+                .text = _currLevel.difficulties[i].ToString();
+            diffSelectButton.GetComponent<DiffSelectButtonCtrl>().difficulty = _currLevel.difficulties[i];
+        }
+        _difficultyMenu.SetActive(true);
+        
+    }
 
-	public void ReturnToMainMenu()
-	{
-		Time.timeScale = 1.0f;
-		// Just restart the scene
-		SceneManager.LoadSceneAsync(0);
-	}
+    public void SelectDifficulty(Difficulty diff)
+    {
+        _levelController.StartLevel(_currLevel, diff);
+        _isLevelRunning = true;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        _difficultyMenu.SetActive(false);
+    }
 
-	public void Restart()
-	{
-		Resume();
-		levelController.RestartLevel();
-	}
+    public void ReturnToMainMenu()
+    {
+        Time.timeScale = 1.0f;
+        // Just restart the scene
+        SceneManager.LoadSceneAsync(0);
+    }
+
+    public void Restart()
+    {        
+        _levelController.RestartLevel();
+        Resume();
+    }
+
+    public void EndLevel(PlayedLevelData playedLevelData)
+    {
+        _isLevelRunning = false;
+
+        _endLevelOverallScore.text = "Score: " + playedLevelData.overallScore;        
+        _endLevelPercentage.text = "Notes Hit: " + playedLevelData.notesHit
+            + " / " + playedLevelData.totalNumberNotes 
+            + "   " + playedLevelData.percentage;
+        _endLevelNoteStreak.text = "Longest note streak: " + playedLevelData.noteStreak;
+        
+        _endLevelMenu.SetActive(true);
+    }
 
 }

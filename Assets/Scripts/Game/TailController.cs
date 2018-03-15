@@ -3,24 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TailController : NoteController {
-    
-    public bool IsEnabled { get; set; }
-    public int FramesHit { get; set; }
+
+    public bool IsHighlighted { get; set; }
+    private Renderer rend;
+    private Color hitColor;
+    private Color origColor;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        rend = transform.parent.GetComponentInChildren<Renderer>();
+        hitColor = new Color(1f, 1f, 1f);
+        origColor = rend.material.color;
+    }
 
     protected override void Start()
     {
         base.Start();
-        _noteData.isTail = true;
+        _noteData.IsTail = true;
     }
 
-    public override void OnContactStay()
+    public void TurnOn()
     {
-        if (IsEnabled & isAtButton)
-        {
-            _noteData.framesHit += this.FramesHit;
-
-            levelController.ReportTailContact(_noteData);
-            FramesHit++;
-        }
+        TurnHighlightOn();
     }
+
+    public void TurnHighlightOn()
+    {
+        if (rend) rend.material.color = hitColor;
+    }
+
+    public void TurnHighlightOff()
+    {
+        if (rend) rend.material.color = origColor;
+    }
+
 }

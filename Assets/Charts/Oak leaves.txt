@@ -3,7 +3,7 @@
 	Name = "Oak leaves"
 	Artist = "Metea11"
 	Charter = "Metea11"
-	Offset = 0
+	Offset = -96
 	Resolution = 192
 	Player2 = bass
 	Difficulty = 0
