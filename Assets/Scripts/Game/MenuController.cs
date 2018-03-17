@@ -96,7 +96,7 @@ public class MenuController : MonoBehaviour {
         for (int i = 0; i < _currLevel.difficulties.Length; i++)
         {            
             GameObject diffSelectButton = Instantiate(_diffSelectButtonPrefab);
-            diffSelectButton.transform.SetParent(_difficultyMenu.transform);
+            diffSelectButton.transform.SetParent(_difficultyMenu.transform.GetChild(0));
             diffSelectButton.GetComponentInChildren<Text>()
                 .text = _currLevel.difficulties[i].ToString();
             diffSelectButton.GetComponent<DiffSelectButtonCtrl>().difficulty = _currLevel.difficulties[i];
