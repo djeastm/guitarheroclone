@@ -54,7 +54,7 @@ public class NoteController : MonoBehaviour
             Tail.TurnOn();
         } else
         {
-            // Do something interesting with hit notes?
+            // TODO: Do something interesting with hit notes
         }
     }
 

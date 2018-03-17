@@ -69,19 +69,20 @@ public class ButtonController : MonoBehaviour
 
     void OnContactStay()
     {        
-        if (_currentNotes.Count > 0)
+        if (_currentNotes.Count > 0 && _currentNotes[0])
         {
-            
-            if (!_currentNotes[0].GetNoteData().IsHit
-                && !_currentNotes[0].GetNoteData().IsTail)
+            if (!_currentNotes[0].GetNoteData().IsTail)
             {
-                _currentNotes[0].OnHit();
-                _currentNotes.Remove(_currentNotes[0]);
+                if (!_currentNotes[0].GetNoteData().IsHit)
+                {
+                    _currentNotes[0].OnHit();
+                    _currentNotes.Remove(_currentNotes[0]);
 
-                levelController.OnSingleNoteSuccess();
-                
-            } else if (_currentNotes[0].GetNoteData().IsTail)
+                    levelController.OnSingleNoteSuccess();
+                }
+            } else 
             {
+                Debug.Log("!");
                 levelController.OnHeldNote();
             }
         }
