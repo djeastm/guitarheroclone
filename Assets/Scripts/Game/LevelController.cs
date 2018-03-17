@@ -54,7 +54,7 @@ public class LevelController : MonoBehaviour
         _longestNoteStreak = 0;
 
         _percentageText.text = "0.00%";
-        _scoreText.text = "0";
+        _scoreText.text = "000000";
         _scoreSlider.value = 0;
 
         // Reset position, fretboard and notes
@@ -190,7 +190,7 @@ public class LevelController : MonoBehaviour
 
     private void UpdateOverallScoreVisual(float overallScore)
     {
-        string scoreStr = "" + overallScore;
+        string scoreStr = string.Format("{0:000000}", overallScore);
         _scoreText.text = scoreStr;
     }
 

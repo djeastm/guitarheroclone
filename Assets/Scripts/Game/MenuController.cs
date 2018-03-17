@@ -30,6 +30,9 @@ public class MenuController : MonoBehaviour {
     public Text _endLevelPercentage;
     public Text _endLevelNoteStreak;
 
+    public Material[] _skyboxes;
+    public GameObject[] _particleSystemsPrefabs;
+
     public GameObject _songSelectButtonPrefab;
     public GameObject _diffSelectButtonPrefab;
 
@@ -48,8 +51,10 @@ public class MenuController : MonoBehaviour {
         for (int i = 0; i < _levels.Length; i++) {
             GameObject songSelectButton = Instantiate(_songSelectButtonPrefab);
             songSelectButton.transform.SetParent(_mainMenuContentPane.transform);
-            songSelectButton.GetComponentInChildren<Text>()
-                .text = _levels[i].title + " - " + _levels[i].artist;
+            songSelectButton.transform.GetChild(0).GetChild(0).GetComponent<Text>()
+                .text = _levels[i].artist;
+            songSelectButton.transform.GetChild(0).GetChild(2).GetComponent<Text>()
+                .text = _levels[i].title;
             songSelectButton.GetComponent<SongSelectButtonCtrl>().id = i;
         }
     }
@@ -102,6 +107,14 @@ public class MenuController : MonoBehaviour {
 
     public void SelectDifficulty(Difficulty diff)
     {
+        // Change skybox
+        Camera.main.clearFlags = CameraClearFlags.Skybox;
+        RenderSettings.skybox = _skyboxes[(int) diff];
+
+        // Change particle effects
+        GameObject particleSystem = Instantiate(_particleSystemsPrefabs[(int)diff]);
+        particleSystem.transform.SetParent(Camera.main.transform);
+        
         _levelController.StartLevel(_currLevel, diff);
         _isLevelRunning = true;
         //Cursor.visible = false;
