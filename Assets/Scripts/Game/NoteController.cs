@@ -60,7 +60,7 @@ public class NoteController : MonoBehaviour
             // TODO: Do something interesting with hit notes
             if (_explosion) { 
                 GameObject explosion = Instantiate(_explosion);
-                explosion.transform.position = transform.position;
+                explosion.transform.position = _triggeringButton.transform.position;
             }
             //Destroy(transform.parent.gameObject);
 

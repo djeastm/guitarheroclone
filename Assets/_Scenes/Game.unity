@@ -1039,7 +1039,7 @@ MonoBehaviour:
   _scoreMultiplier: 1000
   _starPowerNotesReqd: 10
   _starPowerMultiplier: 2
-  _perFrameTailBonus: 0.005
+  _perFrameTailBonus: 0.01
   _perFrameTailPenalty: 0.25
   _missedNotePenalty: 0.5
   _percentageText: {fileID: 822692995}
@@ -1126,7 +1126,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1039146043}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.40841052
+  m_Size: 0.5956281
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2899,7 +2899,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 249}
+  m_AnchoredPosition: {x: 0, y: 42.03062}
   m_SizeDelta: {x: 0, y: 420.9}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1264822752
@@ -4719,6 +4719,26 @@ MonoBehaviour:
     - {fileID: 8300000, guid: c216b6cd321c43c40ab8f67803bb7d57, type: 3}
     chartFile: {fileID: 4900000, guid: 154d3191d37eb084c8f279556523b5fd, type: 3}
     difficulties: 02000000
+  - title: The Middle
+    artist: Jimmy Eat World
+    offset: 0
+    resolution: 0
+    musicFiles:
+    - {fileID: 8300000, guid: 5c7e1cdefd24f394cae481d6fc928503, type: 3}
+    - {fileID: 8300000, guid: 42c663b4c4ea00e48b6648de958860ba, type: 3}
+    - {fileID: 8300000, guid: e9d58ff6ab6429d469713f043b5aa150, type: 3}
+    chartFile: {fileID: 4900000, guid: 50000fefd45558640ba1b7d102a24276, type: 3}
+    difficulties: 000000000100000002000000
+  - title: Sweet Home Alabama
+    artist: Lynyrd Skynyrd
+    offset: 0
+    resolution: 0
+    musicFiles:
+    - {fileID: 8300000, guid: a1107e1f43ed9d340bb3bf1e7477c555, type: 3}
+    - {fileID: 8300000, guid: d06454163f9936948ab2a0861c3eb8b9, type: 3}
+    - {fileID: 8300000, guid: 97acacee7a28b2446b52b639a21466fd, type: 3}
+    chartFile: {fileID: 4900000, guid: 46c809974db2c6d4f80b9aff50dcfb78, type: 3}
+    difficulties: 000000000100000002000000
 --- !u!4 &2033197437
 Transform:
   m_ObjectHideFlags: 0
