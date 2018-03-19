@@ -81,8 +81,7 @@ public class ButtonController : MonoBehaviour
                     levelController.OnSingleNoteSuccess();
                 }
             } else 
-            {
-                Debug.Log("!");
+            {                
                 levelController.OnHeldNote();
             }
         }
