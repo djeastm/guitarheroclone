@@ -183,7 +183,7 @@ public class ChartReader : MonoBehaviour
         noteTransform.SetParent(transform);
         noteTransform.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
         Transform noteCollider = noteTransform.GetChild(0);
-        noteCollider.gameObject.AddComponent<NoteController>();
+        //noteCollider.gameObject.AddComponent<NoteController>();
         noteCollider.GetComponent<NoteController>().InitializeNote(note);
         if (note.secLength > 0) // There's a held note, so spawn a 'tail' on the note
         {

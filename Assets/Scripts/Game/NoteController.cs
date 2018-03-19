@@ -21,13 +21,16 @@ public class NoteController : MonoBehaviour
     protected ButtonController _triggeringButton;
     private bool hasEnteredButton;
     public TailController Tail { get; set; }
-    
+
+    public GameObject _explosion;
+
     private bool _hasExitedButton;
     private bool _hasPassedBy;
 
     protected virtual void Awake()
     {
         levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
+
     }
 
     // Called by ChartReader when instantiating note
@@ -55,6 +58,13 @@ public class NoteController : MonoBehaviour
         } else
         {
             // TODO: Do something interesting with hit notes
+            if (_explosion) { 
+                GameObject explosion = Instantiate(_explosion);
+                explosion.transform.position = transform.position;
+            }
+            //Destroy(transform.parent.gameObject);
+
+
         }
     }
 

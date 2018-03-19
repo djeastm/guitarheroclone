@@ -70,6 +70,7 @@ GameObject:
   - component: {fileID: 65841908619906048}
   - component: {fileID: 54264292634235272}
   - component: {fileID: 114886484457749964}
+  - component: {fileID: 114096161401397370}
   m_Layer: 0
   m_Name: Note Collider
   m_TagString: Untagged
@@ -207,6 +208,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114096161401397370
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1967363723408010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32b863e14bb9c674baeb04be354a556c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _explosion: {fileID: 100000, guid: 37795915896fcc947a92ab529f78e3b8, type: 2}
 --- !u!114 &114886484457749964
 MonoBehaviour:
   m_ObjectHideFlags: 1

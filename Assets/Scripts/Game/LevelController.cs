@@ -18,6 +18,7 @@ public class LevelController : MonoBehaviour
     public int _speed;
     public int _scoreMultiplier;
     public int _starPowerNotesReqd;
+    public int _starPowerMultiplier;
     public float _perFrameTailBonus;
     public float _perFrameTailPenalty;
     public float _missedNotePenalty;
@@ -26,6 +27,7 @@ public class LevelController : MonoBehaviour
     public Text _percentageText;
     public Text _scoreText;
     public Slider _scoreSlider;
+    public Text _starPowerText;
     public Slider _timeSlider;
     
     private Level _level;
@@ -41,6 +43,7 @@ public class LevelController : MonoBehaviour
     private float _starPowerNotesHit;
     private int _currentNoteStreak;
     private int _longestNoteStreak;
+    private bool _isStarPowerOn;
 
     private void Init()
     {
@@ -135,6 +138,14 @@ public class LevelController : MonoBehaviour
         UpdateStarPowerScore(-_missedNotePenalty);
     }
 
+    private void ToggleStarPower(bool isOn)
+    {
+        _isStarPowerOn = isOn;
+        
+        if (_isStarPowerOn) _starPowerText.gameObject.SetActive(true);
+        else _starPowerText.gameObject.SetActive(false);
+    }
+
     private void AddToNoteStreak()
     {
         _currentNoteStreak++;
@@ -167,12 +178,17 @@ public class LevelController : MonoBehaviour
 
         starPowerRatio = Mathf.Clamp(starPowerRatio, 0, 1);
 
+        if (starPowerRatio > .95) ToggleStarPower(true);
+        else ToggleStarPower(false);
+
         UpdateStarPowerVisual(starPowerRatio);
     }
 
     private void UpdateOverallScore(float amount)
     {
-        _score += amount * _scoreMultiplier;
+        if (_isStarPowerOn) _score += amount * _scoreMultiplier *_starPowerMultiplier;
+        else _score += amount * _scoreMultiplier;
+
         if (_score < 0) _score = 0;
         UpdateOverallScoreVisual(_score);
     }

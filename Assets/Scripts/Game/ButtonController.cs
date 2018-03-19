@@ -9,12 +9,12 @@ public class ButtonController : MonoBehaviour
     public int _sensitivity;
 
     //References    
-    private LevelController levelController;
-    private InteractionBehaviour interactionBehaviour;
+    private LevelController _levelController;
+    private InteractionBehaviour _interactionBehaviour;
 
     //Audio
-    private AudioSource soundEffects;
-    public AudioClip missSound;
+    private AudioSource _soundEffects;
+    public AudioClip _missSound;
     //public AudioClip hitSound;
 
     // Position
@@ -29,9 +29,9 @@ public class ButtonController : MonoBehaviour
 
     void Awake()
     {
-        levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
-        interactionBehaviour = GetComponent<InteractionBehaviour>();
-        soundEffects = GetComponent<AudioSource>();
+        _levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
+        _interactionBehaviour = GetComponent<InteractionBehaviour>();
+        _soundEffects = GetComponent<AudioSource>();
         _currentNotes = new List<NoteController>();
         BUTTON_START_POS = transform.position;
     }
@@ -44,9 +44,9 @@ public class ButtonController : MonoBehaviour
 
     void Start()
     {
-        interactionBehaviour.OnContactStay += OnContactStay;
-        interactionBehaviour.OnContactBegin += OnContactBegin;
-        interactionBehaviour.OnContactEnd += OnContactEnd;
+        _interactionBehaviour.OnContactStay += OnContactStay;
+        _interactionBehaviour.OnContactBegin += OnContactBegin;
+        _interactionBehaviour.OnContactEnd += OnContactEnd;
     }
 
     public void OnNoteEnter(NoteController noteCtrl)
@@ -55,9 +55,12 @@ public class ButtonController : MonoBehaviour
     }
 
     public void OnNoteExit(NoteController noteCtrl)
-    {        
+    {
         if (_currentNotes.Count > 0)
+        {
             _currentNotes.Remove(noteCtrl);
+            _currentNotes.RemoveAll(item => item == null);
+        }
     }
 
 
@@ -78,20 +81,20 @@ public class ButtonController : MonoBehaviour
                     _currentNotes[0].OnHit();
                     _currentNotes.Remove(_currentNotes[0]);
 
-                    levelController.OnSingleNoteSuccess();
+                    _levelController.OnSingleNoteSuccess();
                 }
             } else 
             {                
-                levelController.OnHeldNote();
+                _levelController.OnHeldNote();
             }
         }
         else
         {   
             if (_sensitivityCounter % _sensitivity == 0)
             {
-                levelController.OnInvalidTouch();
+                _levelController.OnInvalidTouch();
                 
-                soundEffects.PlayOneShot(missSound);
+                _soundEffects.PlayOneShot(_missSound);
             }
             _sensitivityCounter++;
             
