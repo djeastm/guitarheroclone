@@ -28,8 +28,7 @@ public class ChartReader : MonoBehaviour
         List<Note> notes = SpawnNotes(_chart, diff);
         _fretboardTime = TickToTime(_chart, notes[notes.Count - 1].tickStart, _chart.Resolution) 
             + TickToTime(_chart, notes[notes.Count - 1].tickLength, _chart.Resolution) * 2
-            + TickToTime(_chart, (int)_chart.Offset, _chart.Resolution);        
-        SpawnFretboard(_fretboardPrefab,Vector3.zero,_fretboardTime+100); //extra fretboard added for safety
+            + TickToTime(_chart, (int)_chart.Offset, _chart.Resolution);                
         SpawnButtons();
         return _chart;        
     }	
@@ -249,16 +248,6 @@ public class ChartReader : MonoBehaviour
     public static double DisToTime(int tickStart, int tickEnd, float resolution, float bpm, int fretboardScale)
     {
         return fretboardScale * (tickEnd - tickStart) / resolution * 60 / bpm;
-    }
-
-
-    private void SpawnFretboard(Transform prefab, Vector3 point, float length = 0f)
-    {
-        Transform fretboard = Instantiate(prefab);
-        fretboard.SetParent(transform);
-        fretboard.position = new Vector3(fretboard.position.x, fretboard.position.y, point.z + length / 2f);
-        fretboard.localScale = new Vector3(fretboard.localScale.x, fretboard.localScale.y, length/10f);
-
     }
 
     private void SpawnButtons()

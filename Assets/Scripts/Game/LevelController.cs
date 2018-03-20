@@ -98,7 +98,7 @@ public class LevelController : MonoBehaviour
         }
         _isRunning = true;
 
-    }
+    }    
 
     public void RestartLevel()
     {
@@ -195,7 +195,7 @@ public class LevelController : MonoBehaviour
 
     private void UpdatePercentageVisual(float percentage)
     {
-        string scoreStr = string.Format("{0:0.00%}", percentage);
+        string scoreStr = string.Format("{0:0%}", percentage);
         _percentageText.text = scoreStr; // Final percent complete
     }
 

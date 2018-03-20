@@ -20,6 +20,8 @@ public class MenuController : MonoBehaviour {
 
     private LevelController _levelController;
 
+    public GameObject _fretboard;
+
     public GameObject _mainMenu;
     public GameObject _mainMenuContentPane;
     public GameObject _pauseMenu;
@@ -30,6 +32,7 @@ public class MenuController : MonoBehaviour {
     public Text _endLevelPercentage;
     public Text _endLevelNoteStreak;
 
+    public Material[] _fretboards;
     public Material[] _skyboxes;
     public GameObject[] _particleSystemsPrefabs;
 
@@ -107,13 +110,17 @@ public class MenuController : MonoBehaviour {
 
     public void SelectDifficulty(Difficulty diff)
     {
+        // Change fretboard
+        _fretboard.GetComponent<Renderer>().material = _fretboards[(int)diff];
+        _fretboard.SetActive(true);
+
         // Change skybox
         Camera.main.clearFlags = CameraClearFlags.Skybox;
         RenderSettings.skybox = _skyboxes[(int) diff];
 
         // Change particle effects
         GameObject particleSystem = Instantiate(_particleSystemsPrefabs[(int)diff]);
-        particleSystem.transform.SetParent(Camera.main.transform);
+        particleSystem.transform.SetParent(Camera.main.transform);        
         
         _levelController.StartLevel(_currLevel, diff);
         _isLevelRunning = true;
@@ -139,11 +146,9 @@ public class MenuController : MonoBehaviour {
     {
         _isLevelRunning = false;
 
-        _endLevelOverallScore.text = "Score: " + playedLevelData.overallScore;        
-        _endLevelPercentage.text = "Notes Hit: " + playedLevelData.notesHit
-            + " / " + playedLevelData.totalNumberNotes 
-            + "   " + playedLevelData.percentage;
-        _endLevelNoteStreak.text = "Longest note streak: " + playedLevelData.noteStreak;
+        _endLevelOverallScore.text = string.Format("{0:000000}", playedLevelData.overallScore);
+        _endLevelPercentage.text = string.Format("{0:0.00%}", playedLevelData.percentage);
+        _endLevelNoteStreak.text = "" + playedLevelData.noteStreak;
         
         _endLevelMenu.SetActive(true);
     }
