@@ -239,6 +239,7 @@ public class LevelController : MonoBehaviour
         _scoreSlider.gameObject.SetActive(active);
         _timeSlider.gameObject.SetActive(active);
         _percentageText.gameObject.SetActive(active);
+        if (!active) _starPowerText.gameObject.SetActive(false);
     }
 
     private void ShowEndLevelMenu()

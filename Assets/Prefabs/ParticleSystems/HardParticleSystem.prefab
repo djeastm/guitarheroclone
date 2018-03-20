@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4258055321390968}
   - component: {fileID: 199705807398693750}
   - component: {fileID: 198999823377170740}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HardParticleSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}

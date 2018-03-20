@@ -3,7 +3,7 @@
 	Name = "The Middle"
 	Artist = "Jimmy Eat World"
 	Year = ", 2001"
-	Offset = -0.483
+	Offset = 0
 	Resolution = 192
 	Player2 = bass
 	Difficulty = 0

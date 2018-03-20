@@ -9,8 +9,9 @@ public class ButtonController : MonoBehaviour
     public int _sensitivity;
 
     //References    
+    public GameObject _explosion;
     private LevelController _levelController;
-    private InteractionBehaviour _interactionBehaviour;
+    private InteractionBehaviour _interactionBehaviour;    
 
     //Audio
     private AudioSource _soundEffects;
@@ -125,6 +126,15 @@ public class ButtonController : MonoBehaviour
         if (visualization.position.y > BUTTON_START_POS.y)
             visualization.position = BUTTON_START_POS;
 
+    }
+
+    public void TriggerExplosion()
+    {        
+        if (_explosion)
+        {
+            GameObject explosion = Instantiate(_explosion);
+            explosion.transform.position = transform.position;
+        }
     }
 
 

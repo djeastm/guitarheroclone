@@ -154,7 +154,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 0.7
   Loop: 0
   Mute: 0
@@ -265,5 +265,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sensitivity: 20
-  missSound: {fileID: 8300000, guid: 4301430511572b04a927bed434398a00, type: 3}
+  _explosion: {fileID: 1000013462590818, guid: ecdd96beb7f93494880c052dfccf9dc1, type: 2}
+  _missSound: {fileID: 8300000, guid: 4301430511572b04a927bed434398a00, type: 3}
   _buttonDepth: 0.05

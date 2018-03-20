@@ -199,7 +199,8 @@ public class ChartReader : MonoBehaviour
             tailCollider.localPosition = new Vector3(tailCollider.localPosition.x, tailCollider.localPosition.y, tailCollider.localPosition.z + 0.25f);
             // Then we shrink the renderer (to make it thinner)
             Transform tailRenderer = tail.GetChild(1);
-            tailRenderer.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, note.secLength); 
+            tailRenderer.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, note.secLength);
+            Destroy(tailCollider.gameObject.GetComponent<NoteController>());
             TailController tc = tailCollider.gameObject.AddComponent<TailController>();
             tc.InitializeNote(note);
             noteCollider.GetComponent<NoteController>().AttachTail(tc);

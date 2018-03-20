@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4673158579426062}
   - component: {fileID: 199046117973520514}
   - component: {fileID: 198033424534815386}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: EasyParticleSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}

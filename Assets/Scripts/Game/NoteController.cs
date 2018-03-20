@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Leap.Unity.Interaction;
 using UnityEngine;
 
+[System.Serializable]
 public struct NoteData
 {
     public int id;
@@ -21,8 +22,6 @@ public class NoteController : MonoBehaviour
     protected ButtonController _triggeringButton;
     private bool hasEnteredButton;
     public TailController Tail { get; set; }
-
-    public GameObject _explosion;
 
     private bool _hasExitedButton;
     private bool _hasPassedBy;
@@ -53,16 +52,16 @@ public class NoteController : MonoBehaviour
     {        
         _noteData.IsHit = true;
         
-        if (Tail) {            
+        if (Tail) {
             Tail.TurnOn();
+            _triggeringButton.TriggerExplosion();
         } else
-        {
-            // TODO: Do something interesting with hit notes
-            if (_explosion) { 
-                GameObject explosion = Instantiate(_explosion);
-                explosion.transform.position = _triggeringButton.transform.position;
+        {            
+            if (!_noteData.IsTail) {
+                _triggeringButton.TriggerExplosion();
+                // Turn off renderer
+                transform.parent.GetChild(1).gameObject.SetActive(false);
             }
-            //Destroy(transform.parent.gameObject);
 
 
         }
