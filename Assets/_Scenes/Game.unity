@@ -786,7 +786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.441}
+  m_Color: {r: 0.52205884, g: 0.52205884, b: 0.52205884, a: 0.441}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1088,17 +1088,19 @@ MonoBehaviour:
     MediaType: 
     MusicStream: 
   _notePrefabs:
-  - {fileID: 4102773264786372, guid: 1795f7bfa9829014483670f15113e65f, type: 2}
-  - {fileID: 4016539784895128, guid: 30bb4bc66cf18d541ac5a71b441a6577, type: 2}
-  - {fileID: 4194969441149894, guid: 0d49d7ee29708a74c896f43bba9f23cb, type: 2}
-  - {fileID: 4547447998773102, guid: 507023eba6e412a48a351b1a9b5a8d99, type: 2}
-  - {fileID: 4747311557877060, guid: 0384aa985dc7e5b47abe78d56b67d2a3, type: 2}
+  - {fileID: 4538748531060514, guid: 1795f7bfa9829014483670f15113e65f, type: 2}
+  - {fileID: 4220051729838676, guid: 30bb4bc66cf18d541ac5a71b441a6577, type: 2}
+  - {fileID: 4740061436443142, guid: 0d49d7ee29708a74c896f43bba9f23cb, type: 2}
+  - {fileID: 4774413248725332, guid: 507023eba6e412a48a351b1a9b5a8d99, type: 2}
+  - {fileID: 4209889196333040, guid: 0384aa985dc7e5b47abe78d56b67d2a3, type: 2}
   _buttonPrefabs:
-  - {fileID: 4030752306803616, guid: 144f697cf55e47745bbd1bf0054f3e38, type: 2}
-  - {fileID: 4030752306803616, guid: 1147af1699b5d454298c5a4c014f5fc4, type: 2}
-  - {fileID: 4030752306803616, guid: 56e2f063e82b1d34582f548e65b62cf3, type: 2}
-  - {fileID: 4030752306803616, guid: 3558417338d7990458c678338cb9ebf9, type: 2}
-  - {fileID: 4030752306803616, guid: e7b62640db55db2488ef6f1527ab9c9b, type: 2}
+  - {fileID: 4271352707051310, guid: 144f697cf55e47745bbd1bf0054f3e38, type: 2}
+  - {fileID: 4799302479962278, guid: 1147af1699b5d454298c5a4c014f5fc4, type: 2}
+  - {fileID: 4882878959762528, guid: 56e2f063e82b1d34582f548e65b62cf3, type: 2}
+  - {fileID: 4464990790090664, guid: 3558417338d7990458c678338cb9ebf9, type: 2}
+  - {fileID: 4043437943202296, guid: e7b62640db55db2488ef6f1527ab9c9b, type: 2}
+  _tailPrefab: {fileID: 4789505013797946, guid: be7c98564f73b0b44af81a37ba0b966b,
+    type: 2}
   _fretboardPrefab: {fileID: 4305721993365830, guid: adf82153f2679364bb2f3a12e096b299,
     type: 2}
   _buttonSpawnParent: {fileID: 620823994}
@@ -1217,7 +1219,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1039146043}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999976
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3051,7 +3053,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000008339179}
+  m_AnchoredPosition: {x: 0, y: 0.000010032072}
   m_SizeDelta: {x: 0, y: 420.9}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1264822752
@@ -4829,9 +4831,9 @@ MonoBehaviour:
   _endLevelPercentage: {fileID: 1286935282}
   _endLevelNoteStreak: {fileID: 2109698230}
   _fretboards:
-  - {fileID: 2100000, guid: 8e106ea9699fa9849a5f5431955523ca, type: 2}
-  - {fileID: 2100000, guid: 0cbef7d2e1240f6498abafbc3d46e55a, type: 2}
-  - {fileID: 2100000, guid: f1ea026c8f765384782f2c123856cac4, type: 2}
+  - {fileID: 2100000, guid: cc811fdfe128d1645a49b0bed5b1cf28, type: 2}
+  - {fileID: 2100000, guid: 715d23d2330038e4997eaf7979f4d64f, type: 2}
+  - {fileID: 2100000, guid: 364695700348a4051a4b5f432ec91276, type: 2}
   _skyboxes:
   - {fileID: 2100000, guid: 119ec07f1c7ed204db46bd8465fd5a50, type: 2}
   - {fileID: 2100000, guid: 5d133deeaa66ed445853e946ff25e073, type: 2}

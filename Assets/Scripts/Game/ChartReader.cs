@@ -16,6 +16,7 @@ public class ChartReader : MonoBehaviour
     public Chart _chart;
     public Transform[] _notePrefabs;
     public Transform[] _buttonPrefabs;
+    public Transform _tailPrefab;
     int _fretboardScale;
     private float _fretboardTime;
     public Transform _fretboardPrefab;
@@ -186,7 +187,10 @@ public class ChartReader : MonoBehaviour
         noteCollider.GetComponent<NoteController>().InitializeNote(note);
         if (note.secLength > 0) // There's a held note, so spawn a 'tail' on the note
         {
-            Transform tail = Instantiate(prefab);
+            Transform tail = Instantiate(_tailPrefab);
+            Color tailColor = noteTransform.gameObject.GetComponentInChildren<Renderer>().material.color;
+            tail.GetComponentInChildren<Renderer>().material.color = tailColor;
+
             tail.SetParent(noteTransform.transform);
             // We want to push the tail back by half to line up with the end of the note
             tail.position = new Vector3(noteTransform.position.x, noteTransform.position.y,

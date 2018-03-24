@@ -11,7 +11,8 @@ public class ButtonController : MonoBehaviour
     //References    
     public GameObject _explosion;
     private LevelController _levelController;
-    private InteractionBehaviour _interactionBehaviour;    
+    private InteractionBehaviour _interactionBehaviour;
+    public Transform depressingButton;
 
     //Audio
     private AudioSource _soundEffects;
@@ -109,8 +110,7 @@ public class ButtonController : MonoBehaviour
 
     void PressButton()
     {
-        Transform visualization = transform.GetChild(0);
-        
+        Transform visualization = depressingButton;
         visualization.Translate(Vector3.down * Time.deltaTime, Space.World);
 
         if (visualization.position.y < BUTTON_START_POS.y - _buttonDepth)
@@ -120,7 +120,7 @@ public class ButtonController : MonoBehaviour
 
     void UnpressButton()
     {
-        Transform visualization = transform.GetChild(0);
+        Transform visualization = depressingButton;
         visualization.Translate(Vector3.up * Time.deltaTime, Space.World);
 
         if (visualization.position.y > BUTTON_START_POS.y)
@@ -133,7 +133,12 @@ public class ButtonController : MonoBehaviour
         if (_explosion)
         {
             GameObject explosion = Instantiate(_explosion);
-            explosion.transform.position = transform.position;
+            explosion.transform.position = 
+                new Vector3(
+                    transform.position.x, 
+                    transform.position.y + _buttonDepth, 
+                    transform.position.z
+                    );
         }
     }
 
