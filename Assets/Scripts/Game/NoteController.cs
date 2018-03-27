@@ -23,24 +23,43 @@ public class NoteController : MonoBehaviour
     private bool hasEnteredButton;
     public TailController Tail { get; set; }
 
+    private Renderer _noteRenderer;
+    private Renderer _baseRenderer;
+    private Material _originalNoteMaterial;
+    private Material _originalBaseMaterial;
+    public Material _starPowerNoteMaterial;
+    public Material _starPowerBaseMaterial;
+    private bool _isStarPowerOn;
+    public Vector3 _starPowerBaseRotation;
+
     private bool _hasExitedButton;
     private bool _hasPassedBy;
 
     protected virtual void Awake()
     {
-        levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
-
+        levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();        
+   
     }
 
     // Called by ChartReader when instantiating note
-    public void InitializeNote(Note note)
+    public void InitializeNote(Note note, bool isTail)
     {
         _noteData = new NoteData
         {
             id = note.id,
             secLength = note.secLength,
-            secStart = note.secStart
+            secStart = note.secStart,
+            IsTail = isTail
         };
+
+        _noteRenderer = transform.parent.Find("Note Renderer").GetComponent<Renderer>();
+        if (!_noteData.IsTail)
+        {
+            _baseRenderer = transform.parent.Find("Base").GetComponent<Renderer>();
+            _originalBaseMaterial = _baseRenderer.material;
+        }
+
+        _originalNoteMaterial = _noteRenderer.material;
     }
 
     public void AttachTail(TailController addedTail)
@@ -59,8 +78,9 @@ public class NoteController : MonoBehaviour
         {            
             if (!_noteData.IsTail) {
                 _triggeringButton.TriggerExplosion();
-                // Turn off renderer
-                transform.parent.GetChild(1).gameObject.SetActive(false);
+                // Turn off renderers
+                transform.parent.Find("Note Renderer").gameObject.SetActive(false);
+                transform.parent.Find("Base").gameObject.SetActive(false);
             }
 
 
@@ -106,6 +126,8 @@ public class NoteController : MonoBehaviour
         {            
             Destroy(transform.parent.gameObject);
         }
+
+        if (_isStarPowerOn) _baseRenderer.transform.Rotate(_starPowerBaseRotation * Time.deltaTime);
     }
 
     public void OnTriggerEnter(Collider other)
@@ -130,6 +152,21 @@ public class NoteController : MonoBehaviour
                 _hasExitedButton = true;
                 _triggeringButton.OnNoteExit(this);
             }
+        }
+    }
+
+    public void ToggleStarPower(bool isOn)
+    {
+        _isStarPowerOn = isOn;
+
+        if (_isStarPowerOn)
+        {
+            _noteRenderer.material = _starPowerNoteMaterial;
+            if (!_noteData.IsTail) _baseRenderer.material = _starPowerBaseMaterial;
+        } else
+        {
+            _noteRenderer.material = _originalNoteMaterial;
+            if (!_noteData.IsTail) _baseRenderer.material = _originalBaseMaterial;
         }
     }
 

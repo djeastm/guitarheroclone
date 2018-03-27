@@ -8,6 +8,7 @@ TagManager:
   - LevelController
   - MenuController
   - InteractionManager
+  - Notes
   layers:
   - Default
   - TransparentFX

@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 4740061436443142}
   m_Layer: 0
   m_Name: 3_Yellow Note
-  m_TagString: Untagged
+  m_TagString: Notes
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,7 +103,7 @@ Transform:
   m_GameObject: {fileID: 1850771352236158}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 0.75, z: 1.25}
+  m_LocalScale: {x: 1.05, y: 0.75, z: 1.05}
   m_Children: []
   m_Father: {fileID: 4740061436443142}
   m_RootOrder: 3
@@ -326,3 +326,8 @@ MonoBehaviour:
     secStart: 0
     secLength: 0
     framesHit: 0
+  _starPowerNoteMaterial: {fileID: 2100000, guid: 60294bb5dbe66c141abc66481f803ca3,
+    type: 2}
+  _starPowerBaseMaterial: {fileID: 2100000, guid: 88c1426c62941a54ca31bcbd868e6fcc,
+    type: 2}
+  _starPowerBaseRotation: {x: 0, y: 50, z: 0}

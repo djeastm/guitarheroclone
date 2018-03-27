@@ -13,6 +13,7 @@ public class LevelController : MonoBehaviour
 {
 
     public const int FPS = 60;
+    public float STAR_POWER_REQUIRE_RATIO = 0.95f;
 
     //Adjustables
     public int _speed;
@@ -144,6 +145,13 @@ public class LevelController : MonoBehaviour
         
         if (_isStarPowerOn) _starPowerText.gameObject.SetActive(true);
         else _starPowerText.gameObject.SetActive(false);
+
+        // Turn on/off notes' starpower effects
+        GameObject[] notes = GameObject.FindGameObjectsWithTag("Notes");
+        foreach (GameObject g in notes)
+        {
+            g.GetComponentInChildren<NoteController>().ToggleStarPower(_isStarPowerOn);
+        }
     }
 
     private void AddToNoteStreak()
@@ -178,7 +186,7 @@ public class LevelController : MonoBehaviour
 
         starPowerRatio = Mathf.Clamp(starPowerRatio, 0, 1);
 
-        if (starPowerRatio > .95) ToggleStarPower(true);
+        if (starPowerRatio > STAR_POWER_REQUIRE_RATIO) ToggleStarPower(true);
         else ToggleStarPower(false);
 
         UpdateStarPowerVisual(starPowerRatio);

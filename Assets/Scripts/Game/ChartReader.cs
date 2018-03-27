@@ -184,7 +184,7 @@ public class ChartReader : MonoBehaviour
         noteTransform.position = new Vector3(prefab.position.x, prefab.position.y, point.z);
         Transform noteCollider = noteTransform.GetChild(0);
         //noteCollider.gameObject.AddComponent<NoteController>();
-        noteCollider.GetComponent<NoteController>().InitializeNote(note);
+        noteCollider.GetComponent<NoteController>().InitializeNote(note, false);
         if (note.secLength > 0) // There's a held note, so spawn a 'tail' on the note
         {
             Transform tail = Instantiate(_tailPrefab);
@@ -205,7 +205,7 @@ public class ChartReader : MonoBehaviour
             tailRenderer.localScale += new Vector3(-tail.localScale.x * 0.5f, -tail.localScale.y * 0.5f, note.secLength);
             Destroy(tailCollider.gameObject.GetComponent<NoteController>());
             TailController tc = tailCollider.gameObject.AddComponent<TailController>();
-            tc.InitializeNote(note);
+            tc.InitializeNote(note, true);
             noteCollider.GetComponent<NoteController>().AttachTail(tc);
             tail.SetParent(noteTransform.GetChild(2)); // Attach to tail spawn point
         }
