@@ -351,7 +351,7 @@
 	207360 = E "section section_10"
 	218880 = E "end"
 }
-[ExpertSingle]
+[HardSingle]
 {
 	3601 = N 1 0
 	3601 = N 3 0
