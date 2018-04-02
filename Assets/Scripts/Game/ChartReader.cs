@@ -18,7 +18,6 @@ public class ChartReader : MonoBehaviour
     public Transform[] _buttonPrefabs;
     public Transform _tailPrefab;
     int _fretboardScale;
-    private float _fretboardTime;
     public Transform _fretboardPrefab;
     public Transform _buttonSpawnParent;
 
@@ -26,10 +25,6 @@ public class ChartReader : MonoBehaviour
     {
         _fretboardScale = speed;
         _chart = ParseChart(chartFile.text.ToString());
-        List<Note> notes = SpawnNotes(_chart, diff);
-        _fretboardTime = TickToTime(_chart, notes[notes.Count - 1].tickStart, _chart.Resolution) 
-            + TickToTime(_chart, notes[notes.Count - 1].tickLength, _chart.Resolution) * 2
-            + TickToTime(_chart, (int)_chart.Offset, _chart.Resolution);                
         SpawnButtons();
         return _chart;        
     }	

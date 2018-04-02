@@ -60,6 +60,14 @@ public class MenuController : MonoBehaviour {
                 .text = _levels[i].title;
             songSelectButton.GetComponent<SongSelectButtonCtrl>().id = i;
         }
+        GameObject exitButton = Instantiate(_songSelectButtonPrefab);
+        exitButton.transform.SetParent(_mainMenuContentPane.transform);
+        exitButton.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Exit";
+        exitButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = "";
+        exitButton.transform.GetChild(0).GetChild(2).GetComponent<Text>().text = "";
+        Destroy(exitButton.GetComponent<SongSelectButtonCtrl>());
+        exitButton.GetComponent<Button>().onClick.AddListener(delegate { ExitGame();  });
+
     }
 
     private void Pause()
@@ -104,6 +112,7 @@ public class MenuController : MonoBehaviour {
                 .text = _currLevel.difficulties[i].ToString();
             diffSelectButton.GetComponent<DiffSelectButtonCtrl>().difficulty = _currLevel.difficulties[i];
         }
+        
         _difficultyMenu.SetActive(true);
         
     }
@@ -153,4 +162,8 @@ public class MenuController : MonoBehaviour {
         _endLevelMenu.SetActive(true);
     }
 
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
