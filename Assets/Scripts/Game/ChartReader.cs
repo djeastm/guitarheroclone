@@ -25,6 +25,7 @@ public class ChartReader : MonoBehaviour
     {
         _fretboardScale = speed;
         _chart = ParseChart(chartFile.text.ToString());
+        SpawnNotes(_chart, diff);
         SpawnButtons();
         return _chart;        
     }	
@@ -150,7 +151,7 @@ public class ChartReader : MonoBehaviour
     }
 
     // Spawn all notes
-    List<Note> SpawnNotes(Chart c, Difficulty diff)
+    void SpawnNotes(Chart c, Difficulty diff)
     {
         
         List<Note> notes = c.Notes[diff];
@@ -158,8 +159,7 @@ public class ChartReader : MonoBehaviour
         {           
             SpawnNote(c, note);
         }
-
-        return notes;
+        
     }
 
     //Spawn single note
