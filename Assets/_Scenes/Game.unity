@@ -1219,8 +1219,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1039146044}
   m_HandleRect: {fileID: 1039146043}
   m_Direction: 2
-  m_Value: 0.0000002630825
-  m_Size: 0.72439575
+  m_Value: 0
+  m_Size: 0.5059279
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3054,7 +3054,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 115.99999}
+  m_AnchoredPosition: {x: 0, y: 122.63603}
   m_SizeDelta: {x: 0, y: 420.9}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1264822752
@@ -4834,7 +4834,7 @@ MonoBehaviour:
   _fretboards:
   - {fileID: 2100000, guid: cc811fdfe128d1645a49b0bed5b1cf28, type: 2}
   - {fileID: 2100000, guid: 715d23d2330038e4997eaf7979f4d64f, type: 2}
-  - {fileID: 2100000, guid: 364695700348a4051a4b5f432ec91276, type: 2}
+  - {fileID: 2100000, guid: f1ea026c8f765384782f2c123856cac4, type: 2}
   _skyboxes:
   - {fileID: 2100000, guid: 119ec07f1c7ed204db46bd8465fd5a50, type: 2}
   - {fileID: 2100000, guid: 5d133deeaa66ed445853e946ff25e073, type: 2}
